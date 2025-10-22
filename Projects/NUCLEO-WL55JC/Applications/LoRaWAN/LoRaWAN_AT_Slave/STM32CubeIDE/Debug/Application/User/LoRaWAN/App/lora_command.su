@@ -1,0 +1,6 @@
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/LoRaWAN/App/lora_command.c:726:16:CMD_ProcessBackSpace	8	static
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/LoRaWAN/App/lora_command.c:775:13:CMD_GetChar	8	static
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/LoRaWAN/App/lora_command.c:892:13:com_error	8	static
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/LoRaWAN/App/lora_command.c:804:13:parse_cmd	16	static
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/LoRaWAN/App/lora_command.c:620:6:CMD_Init	8	static
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/LoRaWAN/App/lora_command.c:641:6:CMD_Process	16	static,ignoring_inline_asm

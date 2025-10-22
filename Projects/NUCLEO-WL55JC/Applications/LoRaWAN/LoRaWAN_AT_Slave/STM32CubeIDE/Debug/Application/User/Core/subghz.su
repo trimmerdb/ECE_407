@@ -1,0 +1,3 @@
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/subghz.c:30:6:MX_SUBGHZ_Init	8	static
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/subghz.c:51:6:HAL_SUBGHZ_MspInit	16	static
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/subghz.c:68:6:HAL_SUBGHZ_MspDeInit	8	static

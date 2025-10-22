@@ -1,0 +1,12 @@
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/flash_if.c:411:16:FLASH_IF_INT_IsEmpty	3
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/flash_if.c:341:31:FLASH_IF_INT_Read	3
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/flash_if.c:433:31:FLASH_IF_INT_Clear_Error	3
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/flash_if.c:359:31:FLASH_IF_INT_Erase	6
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/flash_if.c:208:31:FLASH_IF_INT_Write	17
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/flash_if.c:124:24:FLASH_IF_Init	1
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/flash_if.c:138:24:FLASH_IF_DeInit	1
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/flash_if.c:152:24:FLASH_IF_Write	3
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/flash_if.c:168:24:FLASH_IF_Read	3
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/flash_if.c:184:24:FLASH_IF_Erase	3
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/flash_if.c:464:6:HAL_FLASH_EndOfOperationCallback	1
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/flash_if.c:481:6:HAL_FLASH_OperationErrorCallback	1
