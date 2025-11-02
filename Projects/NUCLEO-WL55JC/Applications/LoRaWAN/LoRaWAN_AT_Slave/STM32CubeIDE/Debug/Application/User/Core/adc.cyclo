@@ -1,3 +1,0 @@
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/adc.c:30:6:MX_ADC_Init	2
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/adc.c:72:6:HAL_ADC_MspInit	2
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/adc.c:88:6:HAL_ADC_MspDeInit	2

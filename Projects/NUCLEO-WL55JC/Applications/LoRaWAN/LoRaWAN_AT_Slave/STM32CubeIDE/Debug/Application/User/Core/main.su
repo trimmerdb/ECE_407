@@ -1,3 +1,0 @@
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/main.c:161:6:Error_Handler	0	static,ignoring_inline_asm
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/main.c:109:6:SystemClock_Config	112	static
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/main.c:64:5:main	8	static

@@ -1,8 +1,0 @@
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/usart_if.c:101:25:vcom_Init	1
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/usart_if.c:116:25:vcom_DeInit	1
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/usart_if.c:150:25:vcom_Trace_DMA	1
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/usart_if.c:162:25:vcom_ReceiveInit	3
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/usart_if.c:139:6:vcom_Trace	1
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/usart_if.c:198:6:vcom_Resume	2
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/usart_if.c:213:6:HAL_UART_TxCpltCallback	2
-C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/LoRaWAN/LoRaWAN_AT_Slave/Core/Src/usart_if.c:228:6:HAL_UART_RxCpltCallback	4

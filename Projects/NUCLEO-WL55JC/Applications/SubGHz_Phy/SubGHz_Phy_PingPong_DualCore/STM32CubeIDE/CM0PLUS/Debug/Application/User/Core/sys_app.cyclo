@@ -1,0 +1,12 @@
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM0PLUS/Core/Src/sys_app.c:210:13:System_Init	1
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM0PLUS/Core/Src/sys_app.c:259:13:tiny_snprintf_like	1
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM0PLUS/Core/Src/sys_app.c:86:6:SystemApp_Init	2
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM0PLUS/Core/Src/sys_app.c:127:6:TimestampNow	1
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM0PLUS/Core/Src/sys_app.c:140:6:Process_Sys_Cmd	1
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM0PLUS/Core/Src/sys_app.c:175:6:UTIL_SEQ_EvtIdle	1
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM0PLUS/Core/Src/sys_app.c:194:6:UTIL_SEQ_Idle	1
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM0PLUS/Core/Src/sys_app.c:237:6:UTIL_ADV_TRACE_PreSendHook	1
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM0PLUS/Core/Src/sys_app.c:248:6:UTIL_ADV_TRACE_PostSendHook	1
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM0PLUS/Core/Src/sys_app.c:282:19:HAL_InitTick	1
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM0PLUS/Core/Src/sys_app.c:297:10:HAL_GetTick	2
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM0PLUS/Core/Src/sys_app.c:329:6:HAL_Delay	1
