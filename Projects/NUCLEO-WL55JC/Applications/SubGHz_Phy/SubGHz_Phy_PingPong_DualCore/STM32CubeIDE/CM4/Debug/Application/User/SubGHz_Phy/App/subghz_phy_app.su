@@ -1,5 +1,5 @@
 C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.c:458:13:OnledEvent	8	static
-C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.c:350:13:PingPong_Process	8	static
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.c:350:13:PingPong_Process	16	static
 C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.c:338:13:OnRxError	8	static
 C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.c:327:13:OnRxTimeout	8	static
 C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.c:316:13:OnTxTimeout	8	static

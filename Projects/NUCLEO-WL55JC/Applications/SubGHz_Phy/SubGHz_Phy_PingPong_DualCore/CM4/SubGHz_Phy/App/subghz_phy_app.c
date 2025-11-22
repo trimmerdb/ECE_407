@@ -57,9 +57,9 @@ typedef enum
 #define RX_TIMEOUT_VALUE              3000
 #define TX_TIMEOUT_VALUE              3000
 /* PING string*/
-#define PING "PING"
+#define PING "Received Message"
 /* PONG string*/
-#define PONG "PONG"
+#define PONG "Acknowledgment"
 /*Size of the payload to be sent*/
 /* Size must be greater of equal the PING and PONG*/
 #define MAX_APP_BUFFER_SIZE          255
@@ -370,9 +370,9 @@ static void PingPong_Process(void)
             HAL_Delay(Radio.GetWakeupTime() + RX_TIME_MARGIN);
             /* master sends PING*/
             APP_LOG(TS_ON, VLEVEL_L, "..."
-                    "PING"
+                    "Received Message"
                     "\n\r");
-            APP_LOG(TS_ON, VLEVEL_L, "Master Tx start\n\r");
+            APP_LOG(TS_ON, VLEVEL_L, "Primary Tx start\n\r");
             memcpy(BufferTx, PING, sizeof(PING) - 1);
             Radio.Send(BufferTx, PAYLOAD_LEN);
           }
@@ -380,14 +380,14 @@ static void PingPong_Process(void)
           {
             /* A master already exists then become a slave */
             isMaster = false;
-            APP_LOG(TS_ON, VLEVEL_L, "Slave Rx start\n\r");
+            APP_LOG(TS_ON, VLEVEL_L, "Secondary Rx start\n\r");
             Radio.Rx(RX_TIMEOUT_VALUE);
           }
           else /* valid reception but neither a PING or a PONG message */
           {
             /* Set device as master and start again */
             isMaster = true;
-            APP_LOG(TS_ON, VLEVEL_L, "Master Rx start\n\r");
+            APP_LOG(TS_ON, VLEVEL_L, "Primary Rx start\n\r");
             Radio.Rx(RX_TIMEOUT_VALUE);
           }
         }
@@ -407,9 +407,9 @@ static void PingPong_Process(void)
             HAL_Delay(Radio.GetWakeupTime() + RX_TIME_MARGIN);
             /*slave sends PONG*/
             APP_LOG(TS_ON, VLEVEL_L, "..."
-                    "PONG"
+                    "Acknowledgment"
                     "\n\r");
-            APP_LOG(TS_ON, VLEVEL_L, "Slave  Tx start\n\r");
+            APP_LOG(TS_ON, VLEVEL_L, "Secondary  Tx start\n\r");
             memcpy(BufferTx, PONG, sizeof(PONG) - 1);
             Radio.Send(BufferTx, PAYLOAD_LEN);
           }
@@ -417,7 +417,7 @@ static void PingPong_Process(void)
           {
             /* Set device as master and start again */
             isMaster = true;
-            APP_LOG(TS_ON, VLEVEL_L, "Master Rx start\n\r");
+            APP_LOG(TS_ON, VLEVEL_L, "Primary Rx start\n\r");
             Radio.Rx(RX_TIMEOUT_VALUE);
           }
         }
@@ -435,19 +435,19 @@ static void PingPong_Process(void)
         /* Add delay between RX and TX*/
         /* add random_delay to force sync between boards after some trials*/
         HAL_Delay(Radio.GetWakeupTime() + RX_TIME_MARGIN + random_delay);
-        APP_LOG(TS_ON, VLEVEL_L, "Master Tx start\n\r");
+        APP_LOG(TS_ON, VLEVEL_L, "Primary Tx start\n\r");
         /* master sends PING*/
         memcpy(BufferTx, PING, sizeof(PING) - 1);
         Radio.Send(BufferTx, PAYLOAD_LEN);
       }
       else
       {
-        APP_LOG(TS_ON, VLEVEL_L, "Slave Rx start\n\r");
+        APP_LOG(TS_ON, VLEVEL_L, "Secondary Rx start\n\r");
         Radio.Rx(RX_TIMEOUT_VALUE);
       }
       break;
     case TX_TIMEOUT:
-      APP_LOG(TS_ON, VLEVEL_L, "Slave Rx start\n\r");
+      APP_LOG(TS_ON, VLEVEL_L, "Secondary Rx start\n\r");
       Radio.Rx(RX_TIMEOUT_VALUE);
       break;
     default:
