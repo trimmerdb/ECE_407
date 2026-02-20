@@ -86,6 +86,11 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_SubGHz_Phy_Init();
+  MX_USART1_UART_Init();
+  uint8_t gnss_rx_buffer[256];
+  HAL_UARTEx_ReceiveToIdle_DMA(&huart1, gnss_rx_buffer, sizeof(gnss_rx_buffer));
+  __HAL_DMA_DISABLE_IT(huart1.hdmarx, DMA_IT_HT);
+
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -152,7 +157,15 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+    if(huart->Instance == USART1)
+    {
+        Parse_NMEA(rx_buffer, Size);
 
+        HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx_buffer, RX_BUFFER_SIZE);
+    }
+}
 /* USER CODE END 4 */
 
 /**
