@@ -35,6 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define UART_BUFFER_SIZE 256
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -49,7 +50,7 @@ UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_tx;
 DMA_HandleTypeDef hdma_usart1_rx;
 
-uint8_t uart_rx_buffer[64];
+uint8_t uart_rx_buffer[UART_BUFFER_SIZE];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -177,7 +178,12 @@ void USART1_DMA_Init(void)
 
     /* PB7 -> RX */
     GPIO_InitStruct.Pin = GPIO_PIN_7;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
 
     huart1.Instance = USART1;
     huart1.Init.BaudRate = 115200;
@@ -189,6 +195,11 @@ void USART1_DMA_Init(void)
     huart1.Init.OverSampling = UART_OVERSAMPLING_16;
 
     HAL_UART_Init(&huart1);
+
+    __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
+
+    HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(USART1_IRQn);
 
     /* ---------------- DMA TX ---------------- */
     hdma_usart1_tx.Instance = DMA1_Channel1;
@@ -226,7 +237,15 @@ void USART1_DMA_Init(void)
     HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
 
     /* Start RX DMA */
-    HAL_UART_Receive_DMA(&huart1, uart_rx_buffer, sizeof(uart_rx_buffer));
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart1, uart_rx_buffer, sizeof(uart_rx_buffer));
+}
+
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+    if (huart->Instance == USART1)
+    {
+        HAL_UART_Transmit_DMA(&huart1, uart_rx_buffer, Size);
+    }
 }
 /* USER CODE END 4 */
 
