@@ -31,7 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#define UART_BUFFER_SIZE 256
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

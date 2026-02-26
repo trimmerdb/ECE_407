@@ -22,6 +22,13 @@
 #include "gpio.h"
 #include "usart.h"
 #include "dma.h"
+#include "stdio.h"
+#include "sys_app.h"
+#include "stm32_timer.h"
+#include "stm32_seq.h"
+#include "utilities_def.h"
+
+#include "rmc_parse.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -35,7 +42,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define UART_BUFFER_SIZE 256
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -49,14 +56,19 @@
 UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_tx;
 DMA_HandleTypeDef hdma_usart1_rx;
+UTIL_TIMER_Object_t gpsTimer;
 
+GPS_Data_t gps_data;
+uint8_t uart_rx_byte;
 uint8_t uart_rx_buffer[UART_BUFFER_SIZE];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+//void USART1_UART_IT_Init(void);
 void USART1_DMA_Init(void);
+void GpsTimerCallback(void*);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -87,16 +99,15 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_SubGHz_Phy_Init();
+//  USART1_UART_IT_Init();
   USART1_DMA_Init();
   /* USER CODE BEGIN 2 */
-  uint8_t msg[] = "USART1 DMA OK\r\n";
-  HAL_UART_Transmit_DMA(&huart1, msg, sizeof(msg)-1);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -105,6 +116,9 @@ int main(void)
   {
     /* USER CODE END WHILE */
     MX_SubGHz_Phy_Process();
+    ParseGpsData();
+
+   // ParseGpsData();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -168,7 +182,7 @@ void USART1_DMA_Init(void)
 
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-    /* PB6 -> TX */
+    // TX
     GPIO_InitStruct.Pin = GPIO_PIN_6;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_PULLUP;
@@ -176,46 +190,21 @@ void USART1_DMA_Init(void)
     GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-    /* PB7 -> RX */
+    // RX
     GPIO_InitStruct.Pin = GPIO_PIN_7;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-
     huart1.Instance = USART1;
-    huart1.Init.BaudRate = 115200;
+    huart1.Init.BaudRate = 9600; // match GPS
     huart1.Init.WordLength = UART_WORDLENGTH_8B;
     huart1.Init.StopBits = UART_STOPBITS_1;
     huart1.Init.Parity = UART_PARITY_NONE;
     huart1.Init.Mode = UART_MODE_TX_RX;
     huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
     huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-
     HAL_UART_Init(&huart1);
 
-    __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
-
-    HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(USART1_IRQn);
-
-    /* ---------------- DMA TX ---------------- */
-    hdma_usart1_tx.Instance = DMA1_Channel1;
-    hdma_usart1_tx.Init.Request = DMA_REQUEST_USART1_TX;
-    hdma_usart1_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
-    hdma_usart1_tx.Init.PeriphInc = DMA_PINC_DISABLE;
-    hdma_usart1_tx.Init.MemInc = DMA_MINC_ENABLE;
-    hdma_usart1_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-    hdma_usart1_tx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-    hdma_usart1_tx.Init.Mode = DMA_NORMAL;
-    hdma_usart1_tx.Init.Priority = DMA_PRIORITY_LOW;
-    HAL_DMA_Init(&hdma_usart1_tx);
-
-    __HAL_LINKDMA(&huart1, hdmatx, hdma_usart1_tx);
-
-    /* ---------------- DMA RX ---------------- */
+    // DMA RX
     hdma_usart1_rx.Instance = DMA1_Channel2;
     hdma_usart1_rx.Init.Request = DMA_REQUEST_USART1_RX;
     hdma_usart1_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
@@ -229,24 +218,84 @@ void USART1_DMA_Init(void)
 
     __HAL_LINKDMA(&huart1, hdmarx, hdma_usart1_rx);
 
-    /* Enable DMA IRQ */
-    HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+    // Start DMA reception (circular)
+    HAL_UART_Receive_DMA(&huart1, uart_rx_buffer, UART_BUFFER_SIZE);
 
-    HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
-
-    /* Start RX DMA */
-    HAL_UARTEx_ReceiveToIdle_DMA(&huart1, uart_rx_buffer, sizeof(uart_rx_buffer));
+//    UTIL_SEQ_RegTask(1 << CFG_SEQ_Task_GPS, UTIL_SEQ_RFU, ParseGpsData);
+//
+//    UTIL_TIMER_Create(&gpsTimer, 1000, UTIL_TIMER_PERIODIC, GpsTimerCallback, NULL);
+//    UTIL_TIMER_Start(&gpsTimer);
 }
 
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
-{
-    if (huart->Instance == USART1)
-    {
-        HAL_UART_Transmit_DMA(&huart1, uart_rx_buffer, Size);
-    }
-}
+//void GpsTimerCallback(void *context)
+//{
+//    UTIL_SEQ_SetTask(1 << CFG_SEQ_Task_GPS, CFG_SEQ_Prio_0);
+//}
+
+//void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+//{
+//  if (huart->Instance == USART1)
+//  {
+//	  APP_LOG(TS_ON, VLEVEL_L, "hi\r\n");
+//    uart_rx_buffer[Size] = '\0';
+//
+//    if (GPS_Parse_RMC((char*)uart_rx_buffer, &gps_data))
+//    {
+//      // gps_data now contains:
+//      // latitude
+//      // longitude
+//      // speed_knots
+//      // valid = 1
+//    }
+//
+//    HAL_UARTEx_ReceiveToIdle_DMA(&huart1, uart_rx_buffer, sizeof(uart_rx_buffer));
+//    __HAL_DMA_DISABLE_IT(&hdma_usart1_rx, DMA_IT_HT);
+//
+//  }
+//}
+
+/////////////////
+///////////////// INTERUPT
+/////////////////
+
+//void USART1_UART_IT_Init(void)
+//{
+//    __HAL_RCC_USART1_CLK_ENABLE();
+//    __HAL_RCC_GPIOB_CLK_ENABLE();
+//
+//    GPIO_InitTypeDef GPIO_InitStruct = {0};
+//
+//    // TX
+//    GPIO_InitStruct.Pin = GPIO_PIN_6;
+//    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//    GPIO_InitStruct.Pull = GPIO_PULLUP;
+//    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+//    GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
+//    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+//
+//    // RX
+//    GPIO_InitStruct.Pin = GPIO_PIN_7;
+//    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+//
+//    huart1.Instance = USART1;
+//    huart1.Init.BaudRate = 9600; // match GPS module
+//    huart1.Init.WordLength = UART_WORDLENGTH_8B;
+//    huart1.Init.StopBits = UART_STOPBITS_1;
+//    huart1.Init.Parity = UART_PARITY_NONE;
+//    huart1.Init.Mode = UART_MODE_TX_RX;
+//    huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+//    huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+//    HAL_UART_Init(&huart1);
+//
+//    HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
+//    HAL_NVIC_EnableIRQ(USART1_IRQn);
+//
+//    // Start interrupt-based reception
+//    HAL_UART_Receive_IT(&huart1, &uart_rx_byte, 1);
+//}
+
+
+
 /* USER CODE END 4 */
 
 /**
