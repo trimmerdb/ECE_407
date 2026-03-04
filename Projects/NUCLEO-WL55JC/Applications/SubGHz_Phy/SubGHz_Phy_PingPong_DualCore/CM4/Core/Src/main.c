@@ -28,7 +28,7 @@
 #include "stm32_seq.h"
 #include "utilities_def.h"
 
-#include "rmc_parse.h"
+#include "gps_parse.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

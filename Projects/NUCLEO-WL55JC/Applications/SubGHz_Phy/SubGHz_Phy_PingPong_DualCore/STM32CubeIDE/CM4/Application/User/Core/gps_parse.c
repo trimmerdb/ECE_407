@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "rmc_parse.h"
+#include "gps_parse.h"
 #include "sys_app.h"
 
 #define NMEA_LINE_SIZE 128
@@ -103,6 +103,94 @@ int GPS_Parse_RMC(char *nmea, GPS_Data_t *gps)
     return 1;
 }
 
+int GPS_Parse_GGA(char *nmea, GPS_Data_t *gps)
+{
+    if (strstr(nmea, "GGA") == NULL)
+        return 0;
+
+    char *token;
+    int field = 0;
+
+    char *lat_str = NULL;
+    char *lat_dir = NULL;
+    char *lon_str = NULL;
+    char *lon_dir = NULL;
+    char *fix_str = NULL;
+    char *alt_str = NULL;
+
+    token = strtok(nmea, ",");
+
+    while (token != NULL)
+    {
+        switch (field)
+        {
+            case 2: // Latitude
+                lat_str = token;
+                break;
+
+            case 3: // N/S
+                lat_dir = token;
+                break;
+
+            case 4: // Longitude
+                lon_str = token;
+                break;
+
+            case 5: // E/W
+                lon_dir = token;
+                break;
+
+            case 6: // Fix Quality
+                fix_str = token;
+                break;
+
+            case 9: // Altitude
+                alt_str = token;
+                break;
+        }
+
+        token = strtok(NULL, ",");
+        field++;
+    }
+
+    if (!lat_str || !lon_str || !fix_str || !alt_str)
+        return 0;
+
+    // Fix quality
+    gps->fix = (uint8_t)atoi(fix_str);
+
+    gps->valid = 1;
+
+    // Convert latitude
+    float lat_raw = atof(lat_str);
+    int lat_deg = (int)(lat_raw / 100);
+    float lat_min = lat_raw - (lat_deg * 100);
+    gps->latitude = lat_deg + (lat_min / 60.0f);
+
+    if (lat_dir && lat_dir[0] == 'S')
+        gps->latitude *= -1;
+
+    // Convert longitude
+    float lon_raw = atof(lon_str);
+    int lon_deg = (int)(lon_raw / 100);
+    float lon_min = lon_raw - (lon_deg * 100);
+    gps->longitude = lon_deg + (lon_min / 60.0f);
+
+    if (lon_dir && lon_dir[0] == 'W')
+        gps->longitude *= -1;
+
+    // Altitude (meters)
+    gps->altitude = atof(alt_str);
+
+    if (gps->fix == 0)
+    {
+        gps->valid = 0;
+        return 0;  // No fix
+    }
+
+    return 1;
+}
+
 void ParseGpsData(void)
 {
     // Get current DMA write position
@@ -122,7 +210,7 @@ void ParseGpsData(void)
         {
             nmea_line_buffer[nmea_index] = '\0'; // null-terminate
 
-            if (GPS_Parse_RMC((char*)nmea_line_buffer, &gps_data))
+            if (GPS_Parse_GGA((char*)nmea_line_buffer, &gps_data))
             {
                 // gps_data now contains valid latitude, longitude, speed
                 char logBuffer[128];

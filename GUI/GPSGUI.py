@@ -1,15 +1,14 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import serial
-import serial.tools.list_ports
 import threading
 import re
 
-class SerialGUI:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Serial GPS Parser")
-        self.root.geometry("600x500")
+
+class DevicePanel:
+    def __init__(self, parent, title):
+        self.frame = ttk.LabelFrame(parent, text=title)
+        self.frame.pack(side="left", fill="both", expand=True, padx=10, pady=10)
 
         self.serial_port = None
         self.running = False
@@ -18,50 +17,51 @@ class SerialGUI:
 
     def create_widgets(self):
 
-        # --- Connection Frame ---
-        conn_frame = ttk.LabelFrame(self.root, text="Connection")
-        conn_frame.pack(fill="x", padx=10, pady=5)
-
-        ttk.Label(conn_frame, text="COM Port:").grid(row=0, column=0, padx=5, pady=5)
-        self.port_entry = ttk.Entry(conn_frame, width=15)
-        self.port_entry.grid(row=0, column=1, padx=5)
+        # Connection controls
+        ttk.Label(self.frame, text="COM Port:").grid(row=0, column=0, padx=5, pady=5)
+        self.port_entry = ttk.Entry(self.frame, width=10)
+        self.port_entry.grid(row=0, column=1)
         self.port_entry.insert(0, "COM3")
 
-        ttk.Label(conn_frame, text="Baud Rate:").grid(row=0, column=2, padx=5)
-        self.baud_entry = ttk.Entry(conn_frame, width=10)
-        self.baud_entry.grid(row=0, column=3, padx=5)
+        ttk.Label(self.frame, text="Baud:").grid(row=0, column=2)
+        self.baud_entry = ttk.Entry(self.frame, width=8)
+        self.baud_entry.grid(row=0, column=3)
         self.baud_entry.insert(0, "115200")
 
-        self.connect_btn = ttk.Button(conn_frame, text="Connect", command=self.toggle_connection)
-        self.connect_btn.grid(row=0, column=4, padx=10)
+        self.connect_btn = ttk.Button(self.frame, text="Connect",
+                                      command=self.toggle_connection)
+        self.connect_btn.grid(row=0, column=4, padx=5)
 
-        # --- Parsed Data Frame ---
-        data_frame = ttk.LabelFrame(self.root, text="Parsed Data")
-        data_frame.pack(fill="x", padx=10, pady=5)
+        # Parsed Data
+        ttk.Separator(self.frame, orient="horizontal").grid(row=1, columnspan=5, sticky="ew", pady=5)
 
         self.node_var = tk.StringVar(value="--")
         self.lat_var = tk.StringVar(value="--")
         self.lon_var = tk.StringVar(value="--")
-        self.speed_var = tk.StringVar(value="--")
+        self.fix_var = tk.StringVar(value="--")
+        self.alt_var = tk.StringVar(value="--")
 
-        ttk.Label(data_frame, text="Node:").grid(row=0, column=0, sticky="w", padx=10, pady=5)
-        ttk.Label(data_frame, textvariable=self.node_var, font=("Arial", 12, "bold")).grid(row=0, column=1)
+        ttk.Label(self.frame, text="Node:").grid(row=2, column=0, sticky="w")
+        ttk.Label(self.frame, textvariable=self.node_var, font=("Arial", 11, "bold")).grid(row=2, column=1)
 
-        ttk.Label(data_frame, text="Latitude:").grid(row=1, column=0, sticky="w", padx=10, pady=5)
-        ttk.Label(data_frame, textvariable=self.lat_var, font=("Arial", 12)).grid(row=1, column=1)
+        ttk.Label(self.frame, text="Latitude:").grid(row=3, column=0, sticky="w")
+        ttk.Label(self.frame, textvariable=self.lat_var).grid(row=3, column=1)
 
-        ttk.Label(data_frame, text="Longitude:").grid(row=2, column=0, sticky="w", padx=10, pady=5)
-        ttk.Label(data_frame, textvariable=self.lon_var, font=("Arial", 12)).grid(row=2, column=1)
+        ttk.Label(self.frame, text="Longitude:").grid(row=4, column=0, sticky="w")
+        ttk.Label(self.frame, textvariable=self.lon_var).grid(row=4, column=1)
 
-        ttk.Label(data_frame, text="Speed (m/s):").grid(row=3, column=0, sticky="w", padx=10, pady=5)
-        ttk.Label(data_frame, textvariable=self.speed_var, font=("Arial", 12)).grid(row=3, column=1)
+        ttk.Label(self.frame, text="Fix:").grid(row=5, column=0, sticky="w")
+        ttk.Label(self.frame, textvariable=self.fix_var).grid(row=5, column=1)
 
-        # --- Raw Data Frame ---
-        raw_frame = ttk.LabelFrame(self.root, text="Raw Incoming Data")
-        raw_frame.pack(fill="both", expand=True, padx=10, pady=5)
+        ttk.Label(self.frame, text="Altitude (m):").grid(row=6, column=0, sticky="w")
+        ttk.Label(self.frame, textvariable=self.alt_var).grid(row=6, column=1)
 
-        self.raw_text = tk.Text(raw_frame, height=10)
-        self.raw_text.pack(fill="both", expand=True)
+        # Raw data box
+        self.raw_text = tk.Text(self.frame, height=10)
+        self.raw_text.grid(row=7, column=0, columnspan=5, sticky="nsew", pady=5)
+
+        self.frame.rowconfigure(7, weight=1)
+        self.frame.columnconfigure(4, weight=1)
 
     def toggle_connection(self):
         if not self.running:
@@ -86,7 +86,7 @@ class SerialGUI:
     def read_serial(self):
         while self.running:
             try:
-                line = self.serial_port.readline().decode(errors='ignore').strip()
+                line = self.serial_port.readline().decode(errors="ignore").strip()
                 if line:
                     self.raw_text.insert("end", line + "\n")
                     self.raw_text.see("end")
@@ -96,20 +96,32 @@ class SerialGUI:
 
     def parse_line(self, line):
         """
-        Example input:
-        97s200:Node 1 | Lat: 37.8325600 Lon: -76.9355008 Speed: 0.20
+        Example:
+        109s714:Node 1 | Lat: 37.8325760 Lon: -76.9354560 Fix: 1 Alt: 56 m
         """
 
-        pattern = r"Node\s+(\d+)\s+\|\s+Lat:\s+([-\d.]+)\s+Lon:\s+([-\d.]+)\s+Speed:\s+([-\d.]+)"
+        pattern = r"Node\s+(\d+)\s+\|\s+Lat:\s+([-\d.]+)\s+Lon:\s+([-\d.]+)\s+Fix:\s+(\d+)\s+Alt:\s+([-\d.]+)"
         match = re.search(pattern, line)
 
         if match:
-            node, lat, lon, speed = match.groups()
+            node, lat, lon, fix, alt = match.groups()
 
             self.node_var.set(node)
             self.lat_var.set(f"{float(lat):.6f}")
             self.lon_var.set(f"{float(lon):.6f}")
-            self.speed_var.set(f"{float(speed):.2f}")
+            self.fix_var.set(fix)
+            self.alt_var.set(f"{float(alt):.1f}")
+
+
+class SerialGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Dual GPS Monitor")
+        self.root.geometry("1100x600")
+
+        self.device1 = DevicePanel(root, "Device 1")
+        self.device2 = DevicePanel(root, "Device 2")
+
 
 if __name__ == "__main__":
     root = tk.Tk()

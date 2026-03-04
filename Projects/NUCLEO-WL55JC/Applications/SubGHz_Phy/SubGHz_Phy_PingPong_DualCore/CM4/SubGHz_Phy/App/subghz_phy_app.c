@@ -23,7 +23,7 @@
 #include "sys_app.h"
 #include "subghz_phy_app.h"
 #include "radio.h"
-#include "rmc_parse.h"
+#include "gps_parse.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,7 +57,9 @@ typedef struct __attribute__((packed))
   uint8_t node_id;      // 1 = master, 2 = slave
   int32_t latitude;     // degrees * 1e7
   int32_t longitude;    // degrees * 1e7
-  uint16_t speed;       // knots * 100
+ // uint16_t speed;       // knots * 100
+  uint8_t fix;
+  int32_t altitude;     //meters
 } GPS_Packet_t;
 
 /* USER CODE END PTD */
@@ -114,7 +116,7 @@ int8_t SnrValue = 0;
 /* Led Timers objects*/
 static UTIL_TIMER_Object_t timerLed;
 /* device state. Master: true, Slave: false*/
-bool isMaster = true;
+bool isMaster = false;
 /* random delay to make sure 2 devices will sync*/
 /* the closest the random delays are, the longer it will
    take for the devices to sync when started simultaneously*/
@@ -392,14 +394,14 @@ static void PingPong_Process(void)
         char logBuffer[128];
 
         sprintf(logBuffer,
-                "Node %d | Lat: %ld.%07ld Lon: %ld.%07ld Speed: %u.%02u\r\n",
+                "Node %d | Lat: %ld.%07ld Lon: %ld.%07ld Fix: %u Alt: %ld m\r\n",
                 rxPacket->node_id,
                 rxPacket->latitude / 10000000,
                 labs(rxPacket->latitude % 10000000),
                 rxPacket->longitude / 10000000,
                 labs(rxPacket->longitude % 10000000),
-                rxPacket->speed / 100,
-                rxPacket->speed % 100);
+                rxPacket->fix,
+                rxPacket->altitude);
 
         APP_LOG(TS_ON, VLEVEL_L, "%s", logBuffer);
 
@@ -467,13 +469,17 @@ static void BuildGpsPacket(GPS_Packet_t *pkt)
   {
     pkt->latitude  = (int32_t)(gps_data.latitude * 10000000);
     pkt->longitude = (int32_t)(gps_data.longitude * 10000000);
-    pkt->speed     = (uint16_t)(gps_data.speed_knots * 100);
+    pkt->fix = gps_data.fix;
+    pkt->altitude = (int32_t)(gps_data.altitude);
+    //pkt->speed     = (uint16_t)(gps_data.speed_knots * 100);
   }
   else
   {
     pkt->latitude = 0;
     pkt->longitude = 0;
-    pkt->speed = 0;
+    pkt->fix = 0;
+    pkt->altitude = 0;
+    //pkt->speed = 0;
   }
 }
 

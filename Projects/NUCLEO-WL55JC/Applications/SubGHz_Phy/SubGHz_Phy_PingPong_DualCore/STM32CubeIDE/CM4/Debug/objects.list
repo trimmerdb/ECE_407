@@ -1,6 +1,7 @@
 "./Application/User/Common/System/sys_debug.o"
 "./Application/User/Core/dma.o"
 "./Application/User/Core/gpio.o"
+"./Application/User/Core/gps_parse.o"
 "./Application/User/Core/ipcc.o"
 "./Application/User/Core/ipcc_if.o"
 "./Application/User/Core/main.o"
