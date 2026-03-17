@@ -38,7 +38,26 @@ Application/User/Core/main.o: \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_uart_ex.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_system.h \
  ../../../CM4/SubGHz_Phy/App/app_subghz_phy.h \
- ../../../CM4/Core/Inc/gpio.h ../../../CM4/Core/Inc/main.h
+ ../../../CM4/Core/Inc/gpio.h ../../../CM4/Core/Inc/main.h \
+ ../../../CM4/Core/Inc/usart.h ../../../CM4/Core/Inc/dma.h \
+ ../../../CM4/Core/Inc/sys_app.h ../../../CM4/Core/Inc/platform.h \
+ ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_gpio.h \
+ ../../../../../../../../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_radio.h \
+ ../../../../../../../../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_errno.h \
+ ../../../Common/Board/stm32wlxx_nucleo_conf.h \
+ ../../../../../../../../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.h \
+ ../../../Common/MbMux/mbmux_table.h \
+ ../../../Common/MbMux/features_info.h ../../../CM4/Core/Inc/sys_conf.h \
+ ../../../../../../../../Utilities/trace/adv_trace/stm32_adv_trace.h \
+ ../../../CM4/Core/Inc/utilities_conf.h \
+ ../../../../../../../../Drivers/CMSIS/Include/cmsis_compiler.h \
+ ../../../../../../../../Utilities/misc/stm32_mem.h \
+ ../../../../../../../../Utilities/misc/stm32_tiny_vsnprintf.h \
+ ../../../CM4/Core/Inc/utilities_def.h \
+ ../../../../../../../../Utilities/timer/stm32_timer.h \
+ ../../../../../../../../Utilities/sequencer/stm32_seq.h \
+ ../../../CM4/Core/Inc/utilities_def.h \
+ C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h
 ../../../CM4/Core/Inc/main.h:
 ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h:
 ../../../CM4/Core/Inc/stm32wlxx_hal_conf.h:
@@ -79,3 +98,25 @@ Application/User/Core/main.o: \
 ../../../CM4/SubGHz_Phy/App/app_subghz_phy.h:
 ../../../CM4/Core/Inc/gpio.h:
 ../../../CM4/Core/Inc/main.h:
+../../../CM4/Core/Inc/usart.h:
+../../../CM4/Core/Inc/dma.h:
+../../../CM4/Core/Inc/sys_app.h:
+../../../CM4/Core/Inc/platform.h:
+../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_gpio.h:
+../../../../../../../../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_radio.h:
+../../../../../../../../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_errno.h:
+../../../Common/Board/stm32wlxx_nucleo_conf.h:
+../../../../../../../../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.h:
+../../../Common/MbMux/mbmux_table.h:
+../../../Common/MbMux/features_info.h:
+../../../CM4/Core/Inc/sys_conf.h:
+../../../../../../../../Utilities/trace/adv_trace/stm32_adv_trace.h:
+../../../CM4/Core/Inc/utilities_conf.h:
+../../../../../../../../Drivers/CMSIS/Include/cmsis_compiler.h:
+../../../../../../../../Utilities/misc/stm32_mem.h:
+../../../../../../../../Utilities/misc/stm32_tiny_vsnprintf.h:
+../../../CM4/Core/Inc/utilities_def.h:
+../../../../../../../../Utilities/timer/stm32_timer.h:
+../../../../../../../../Utilities/sequencer/stm32_seq.h:
+../../../CM4/Core/Inc/utilities_def.h:
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h:

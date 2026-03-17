@@ -41,7 +41,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+extern DMA_HandleTypeDef hdma_usart1_tx;
+extern DMA_HandleTypeDef hdma_usart1_rx;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -55,6 +56,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern UART_HandleTypeDef huart1;
 extern IPCC_HandleTypeDef hipcc;
 extern DMA_HandleTypeDef hdma_usart2_tx;
 extern UART_HandleTypeDef huart2;
@@ -257,4 +259,18 @@ void IPCC_C1_TX_IRQHandler(void)
 
 /* USER CODE BEGIN 1 */
 
+void USART1_IRQHandler(void)
+{
+    HAL_UART_IRQHandler(&huart1);
+}
+
+void DMA1_Channel1_IRQHandler(void)
+{
+    HAL_DMA_IRQHandler(&hdma_usart1_tx);
+}
+
+void DMA1_Channel2_IRQHandler(void)
+{
+    HAL_DMA_IRQHandler(&hdma_usart1_rx);
+}
 /* USER CODE END 1 */

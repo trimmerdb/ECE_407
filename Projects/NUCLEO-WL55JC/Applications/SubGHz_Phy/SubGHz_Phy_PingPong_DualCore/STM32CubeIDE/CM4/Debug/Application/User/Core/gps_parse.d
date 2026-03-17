@@ -1,6 +1,10 @@
-Application/User/SubGHz_Phy/App/subghz_phy_app.o: \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.c \
- ../../../CM4/Core/Inc/platform.h \
+Application/User/Core/gps_parse.o: ../Application/User/Core/gps_parse.c \
+ C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h \
+ ../../../CM4/Core/Inc/main.h \
+ ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h \
+ ../../../CM4/Core/Inc/stm32wlxx_hal_conf.h \
+ ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_dma.h \
+ ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_def.h \
  ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wlxx.h \
  ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wl55xx.h \
  ../../../../../../../../Drivers/CMSIS/Include/core_cm4.h \
@@ -9,10 +13,6 @@ Application/User/SubGHz_Phy/App/subghz_phy_app.o: \
  ../../../../../../../../Drivers/CMSIS/Include/cmsis_gcc.h \
  ../../../../../../../../Drivers/CMSIS/Include/mpu_armv7.h \
  ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/system_stm32wlxx.h \
- ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h \
- ../../../CM4/Core/Inc/stm32wlxx_hal_conf.h \
- ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_dma.h \
- ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_def.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_dma.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_dmamux.h \
@@ -37,13 +37,13 @@ Application/User/SubGHz_Phy/App/subghz_phy_app.o: \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_uart.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_uart_ex.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_system.h \
+ ../../../CM4/Core/Inc/sys_app.h ../../../CM4/Core/Inc/platform.h \
  ../../../CM4/Core/Inc/main.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_gpio.h \
  ../../../../../../../../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_radio.h \
  ../../../../../../../../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_errno.h \
  ../../../Common/Board/stm32wlxx_nucleo_conf.h \
  ../../../../../../../../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.h \
- ../../../CM4/Core/Inc/sys_app.h ../../../CM4/Core/Inc/platform.h \
  ../../../Common/MbMux/mbmux_table.h \
  ../../../Common/MbMux/features_info.h ../../../CM4/Core/Inc/sys_conf.h \
  ../../../../../../../../Utilities/trace/adv_trace/stm32_adv_trace.h \
@@ -51,20 +51,13 @@ Application/User/SubGHz_Phy/App/subghz_phy_app.o: \
  ../../../../../../../../Drivers/CMSIS/Include/cmsis_compiler.h \
  ../../../../../../../../Utilities/misc/stm32_mem.h \
  ../../../../../../../../Utilities/misc/stm32_tiny_vsnprintf.h \
- ../../../CM4/Core/Inc/utilities_def.h \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.h \
- ../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/radio.h \
- ../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/radio_def.h \
- ../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/radio_ex.h \
- ../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/lr_fhss_v1_base_types.h \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h \
- ../../../CM4/Core/Inc/main.h \
- ../../../../../../../../Utilities/timer/stm32_timer.h \
- ../../../../../../../../Utilities/sequencer/stm32_seq.h \
- ../../../CM4/Core/Inc/utilities_def.h \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/app_version.h \
- ../../../CM4/MbMux/mbmuxif_sys.h ../../../CM4/MbMux/mbmux.h
-../../../CM4/Core/Inc/platform.h:
+ ../../../CM4/Core/Inc/utilities_def.h
+C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h:
+../../../CM4/Core/Inc/main.h:
+../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h:
+../../../CM4/Core/Inc/stm32wlxx_hal_conf.h:
+../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_dma.h:
+../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_def.h:
 ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wlxx.h:
 ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wl55xx.h:
 ../../../../../../../../Drivers/CMSIS/Include/core_cm4.h:
@@ -73,10 +66,6 @@ Application/User/SubGHz_Phy/App/subghz_phy_app.o: \
 ../../../../../../../../Drivers/CMSIS/Include/cmsis_gcc.h:
 ../../../../../../../../Drivers/CMSIS/Include/mpu_armv7.h:
 ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/system_stm32wlxx.h:
-../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h:
-../../../CM4/Core/Inc/stm32wlxx_hal_conf.h:
-../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_dma.h:
-../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_def.h:
 ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h:
 ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_dma.h:
 ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_dmamux.h:
@@ -101,14 +90,14 @@ Application/User/SubGHz_Phy/App/subghz_phy_app.o: \
 ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_uart.h:
 ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_uart_ex.h:
 ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_system.h:
+../../../CM4/Core/Inc/sys_app.h:
+../../../CM4/Core/Inc/platform.h:
 ../../../CM4/Core/Inc/main.h:
 ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_gpio.h:
 ../../../../../../../../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_radio.h:
 ../../../../../../../../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_errno.h:
 ../../../Common/Board/stm32wlxx_nucleo_conf.h:
 ../../../../../../../../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.h:
-../../../CM4/Core/Inc/sys_app.h:
-../../../CM4/Core/Inc/platform.h:
 ../../../Common/MbMux/mbmux_table.h:
 ../../../Common/MbMux/features_info.h:
 ../../../CM4/Core/Inc/sys_conf.h:
@@ -118,16 +107,3 @@ Application/User/SubGHz_Phy/App/subghz_phy_app.o: \
 ../../../../../../../../Utilities/misc/stm32_mem.h:
 ../../../../../../../../Utilities/misc/stm32_tiny_vsnprintf.h:
 ../../../CM4/Core/Inc/utilities_def.h:
-C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.h:
-../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/radio.h:
-../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/radio_def.h:
-../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/radio_ex.h:
-../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/lr_fhss_v1_base_types.h:
-C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h:
-../../../CM4/Core/Inc/main.h:
-../../../../../../../../Utilities/timer/stm32_timer.h:
-../../../../../../../../Utilities/sequencer/stm32_seq.h:
-../../../CM4/Core/Inc/utilities_def.h:
-C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/app_version.h:
-../../../CM4/MbMux/mbmuxif_sys.h:
-../../../CM4/MbMux/mbmux.h:

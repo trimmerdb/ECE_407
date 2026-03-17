@@ -23,6 +23,10 @@
 #include "sys_app.h"
 #include "subghz_phy_app.h"
 #include "radio.h"
+#include "gps_parse.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /* USER CODE BEGIN Includes */
 #include "stm32_timer.h"
@@ -48,6 +52,16 @@ typedef enum
   TX_TIMEOUT,
 } States_t;
 
+typedef struct __attribute__((packed))
+{
+  uint8_t node_id;      // 1 = master, 2 = slave
+  int32_t latitude;     // degrees * 1e7
+  int32_t longitude;    // degrees * 1e7
+ // uint16_t speed;       // knots * 100
+  uint8_t fix;
+  int32_t altitude;     //meters
+} GPS_Packet_t;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -56,6 +70,7 @@ typedef enum
 /*Timeout*/
 #define RX_TIMEOUT_VALUE              3000
 #define TX_TIMEOUT_VALUE              3000
+#define PAYLOAD_LEN sizeof(GPS_Packet_t)
 /* PING string*/
 #define PING "Received Message"
 /* PONG string*/
@@ -63,9 +78,9 @@ typedef enum
 /*Size of the payload to be sent*/
 /* Size must be greater of equal the PING and PONG*/
 #define MAX_APP_BUFFER_SIZE          255
-#if (PAYLOAD_LEN > MAX_APP_BUFFER_SIZE)
-#error PAYLOAD_LEN must be less or equal than MAX_APP_BUFFER_SIZE
-#endif /* (PAYLOAD_LEN > MAX_APP_BUFFER_SIZE) */
+//#if (PAYLOAD_LEN > MAX_APP_BUFFER_SIZE)
+//#error PAYLOAD_LEN must be less or equal than MAX_APP_BUFFER_SIZE
+//#endif /* (PAYLOAD_LEN > MAX_APP_BUFFER_SIZE) */
 /* wait for remote to be in Rx, before sending a Tx frame*/
 #define RX_TIME_MARGIN                200
 /* Afc bandwidth in Hz */
@@ -84,6 +99,7 @@ typedef enum
 /* Radio events function pointer */
 static RadioEvents_t RadioEvents;
 
+extern GPS_Data_t gps_data;
 /* USER CODE BEGIN PV */
 /*Ping Pong FSM states */
 static States_t State = RX;
@@ -100,7 +116,7 @@ int8_t SnrValue = 0;
 /* Led Timers objects*/
 static UTIL_TIMER_Object_t timerLed;
 /* device state. Master: true, Slave: false*/
-bool isMaster = true;
+bool isMaster = false;
 /* random delay to make sure 2 devices will sync*/
 /* the closest the random delays are, the longer it will
    take for the devices to sync when started simultaneously*/
@@ -149,7 +165,7 @@ static void OnledEvent(void *context);
   * @brief PingPong state machine implementation
   */
 static void PingPong_Process(void);
-
+static void BuildGpsPacket(GPS_Packet_t *pkt);
 /* USER CODE END PFP */
 
 /* Exported functions ---------------------------------------------------------*/
@@ -351,105 +367,88 @@ static void PingPong_Process(void)
 {
   Radio.Sleep();
 
+  GPS_Packet_t txPacket;
+  GPS_Packet_t *rxPacket;
+
   switch (State)
   {
     case RX:
 
-      if (isMaster == true)
+      if (RxBufferSize == PAYLOAD_LEN)
       {
-        if (RxBufferSize > 0)
+        rxPacket = (GPS_Packet_t*)BufferRx;
+
+        UTIL_TIMER_Stop(&timerLed);
+
+        if (isMaster)
         {
-          if (strncmp((const char *)BufferRx, PONG, sizeof(PONG) - 1) == 0)
-          {
-            UTIL_TIMER_Stop(&timerLed);
-            /* switch off green led */
-            HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET); /* LED_GREEN */
-            /* master toggles red led */
-            HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin); /* LED_RED */
-            /* Add delay between RX and TX */
-            HAL_Delay(Radio.GetWakeupTime() + RX_TIME_MARGIN);
-            /* master sends PING*/
-            APP_LOG(TS_ON, VLEVEL_L, "..."
-                    "Received Message"
-                    "\n\r");
-            APP_LOG(TS_ON, VLEVEL_L, "Primary Tx start\n\r");
-            memcpy(BufferTx, PING, sizeof(PING) - 1);
-            Radio.Send(BufferTx, PAYLOAD_LEN);
-          }
-          else if (strncmp((const char *)BufferRx, PING, sizeof(PING) - 1) == 0)
-          {
-            /* A master already exists then become a slave */
-            isMaster = false;
-            APP_LOG(TS_ON, VLEVEL_L, "Secondary Rx start\n\r");
-            Radio.Rx(RX_TIMEOUT_VALUE);
-          }
-          else /* valid reception but neither a PING or a PONG message */
-          {
-            /* Set device as master and start again */
-            isMaster = true;
-            APP_LOG(TS_ON, VLEVEL_L, "Primary Rx start\n\r");
-            Radio.Rx(RX_TIMEOUT_VALUE);
-          }
+          HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
+          HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
         }
-      }
-      else
-      {
-        if (RxBufferSize > 0)
+        else
         {
-          if (strncmp((const char *)BufferRx, PING, sizeof(PING) - 1) == 0)
-          {
-            UTIL_TIMER_Stop(&timerLed);
-            /* switch off red led */
-            HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_RESET); /* LED_RED */
-            /* slave toggles green led */
-            HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin); /* LED_GREEN */
-            /* Add delay between RX and TX */
-            HAL_Delay(Radio.GetWakeupTime() + RX_TIME_MARGIN);
-            /*slave sends PONG*/
-            APP_LOG(TS_ON, VLEVEL_L, "..."
-                    "Acknowledgment"
-                    "\n\r");
-            APP_LOG(TS_ON, VLEVEL_L, "Secondary  Tx start\n\r");
-            memcpy(BufferTx, PONG, sizeof(PONG) - 1);
-            Radio.Send(BufferTx, PAYLOAD_LEN);
-          }
-          else /* valid reception but not a PING as expected */
-          {
-            /* Set device as master and start again */
-            isMaster = true;
-            APP_LOG(TS_ON, VLEVEL_L, "Primary Rx start\n\r");
-            Radio.Rx(RX_TIMEOUT_VALUE);
-          }
+          HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_RESET);
+          HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
         }
-      }
-      break;
-    case TX:
-      APP_LOG(TS_ON, VLEVEL_L, "Rx start\n\r");
-      Radio.Rx(RX_TIMEOUT_VALUE);
-      break;
-    case RX_TIMEOUT:
-    case RX_ERROR:
-      if (isMaster == true)
-      {
-        /* Send the next PING frame */
-        /* Add delay between RX and TX*/
-        /* add random_delay to force sync between boards after some trials*/
-        HAL_Delay(Radio.GetWakeupTime() + RX_TIME_MARGIN + random_delay);
-        APP_LOG(TS_ON, VLEVEL_L, "Primary Tx start\n\r");
-        /* master sends PING*/
-        memcpy(BufferTx, PING, sizeof(PING) - 1);
+
+        char logBuffer[128];
+
+        sprintf(logBuffer,
+                "Node %d | Lat: %ld.%07ld Lon: %ld.%07ld Fix: %u Alt: %ld m\r\n",
+                rxPacket->node_id,
+                rxPacket->latitude / 10000000,
+                labs(rxPacket->latitude % 10000000),
+                rxPacket->longitude / 10000000,
+                labs(rxPacket->longitude % 10000000),
+                rxPacket->fix,
+                rxPacket->altitude);
+
+        APP_LOG(TS_ON, VLEVEL_L, "%s", logBuffer);
+
+        HAL_Delay(Radio.GetWakeupTime() + RX_TIME_MARGIN);
+
+        BuildGpsPacket(&txPacket);
+        memcpy(BufferTx, &txPacket, PAYLOAD_LEN);
+
+        APP_LOG(TS_ON, VLEVEL_L, "Tx start\n\r");
         Radio.Send(BufferTx, PAYLOAD_LEN);
       }
       else
       {
-        APP_LOG(TS_ON, VLEVEL_L, "Secondary Rx start\n\r");
         Radio.Rx(RX_TIMEOUT_VALUE);
       }
       break;
-    case TX_TIMEOUT:
-      APP_LOG(TS_ON, VLEVEL_L, "Secondary Rx start\n\r");
+
+    case TX:
+      APP_LOG(TS_ON, VLEVEL_L, "Rx start\n\r");
       Radio.Rx(RX_TIMEOUT_VALUE);
       break;
+
+    case RX_TIMEOUT:
+    case RX_ERROR:
+
+      if (isMaster)
+      {
+        HAL_Delay(Radio.GetWakeupTime() + RX_TIME_MARGIN + random_delay);
+
+        BuildGpsPacket(&txPacket);
+        memcpy(BufferTx, &txPacket, PAYLOAD_LEN);
+
+        APP_LOG(TS_ON, VLEVEL_L, "Master Tx start\n\r");
+        Radio.Send(BufferTx, PAYLOAD_LEN);
+      }
+      else
+      {
+        APP_LOG(TS_ON, VLEVEL_L, "Slave Rx start\n\r");
+        Radio.Rx(RX_TIMEOUT_VALUE);
+      }
+      break;
+
+    case TX_TIMEOUT:
+      APP_LOG(TS_ON, VLEVEL_L, "Rx restart\n\r");
+      Radio.Rx(RX_TIMEOUT_VALUE);
+      break;
+
     default:
       break;
   }
@@ -460,6 +459,28 @@ static void OnledEvent(void *context)
   HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin); /* LED_GREEN */
   HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin); /* LED_RED */
   UTIL_TIMER_Start(&timerLed);
+}
+
+static void BuildGpsPacket(GPS_Packet_t *pkt)
+{
+  pkt->node_id  = isMaster ? 1 : 2;
+
+  if (gps_data.valid)
+  {
+    pkt->latitude  = (int32_t)(gps_data.latitude * 10000000);
+    pkt->longitude = (int32_t)(gps_data.longitude * 10000000);
+    pkt->fix = gps_data.fix;
+    pkt->altitude = (int32_t)(gps_data.altitude);
+    //pkt->speed     = (uint16_t)(gps_data.speed_knots * 100);
+  }
+  else
+  {
+    pkt->latitude = 0;
+    pkt->longitude = 0;
+    pkt->fix = 0;
+    pkt->altitude = 0;
+    //pkt->speed = 0;
+  }
 }
 
 /* USER CODE END PrFD */
