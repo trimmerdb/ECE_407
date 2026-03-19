@@ -88,7 +88,7 @@ class DevicePanel:
 
     def subframe(self, parent, pack):
         subframe = tk.Frame(master=parent, background="purple")
-        self.pack_frame(subframe, pack)
+        subframe.pack(padx=PAD, pady=PAD, side=tk.TOP, expand=0, fill=tk.X)
         return subframe
 
 class SerialGUI:
