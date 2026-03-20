@@ -67,7 +67,7 @@ class DevicePanel:
         ttk.Label(self.alt, textvariable=self.alt_var).pack(side=tk.LEFT)
 
         #   data tab
-        self.raw_data = tk.Text(self.tab_window, height=10, state=tk.DISABLED).pack(expand=True, fill=tk.BOTH)
+        self.raw_data = tk.Text(self.tab_window, width=10, height=10, state=tk.DISABLED).pack(expand=True, fill=tk.BOTH)
 
     def spacer(self, parent, place = tk.LEFT, multiplier = 1):
         ttk.Separator(parent).pack(side= place, padx=PAD*multiplier)
