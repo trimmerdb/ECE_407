@@ -19,12 +19,27 @@ class DevicePanel:
         #subframes
         self.controls = self.subframe(self.frame, tk.TOP)
         self.coords = self.subframe(self.frame, tk.TOP)
+        self.tab_window = tk.LabelFrame(master=self.frame, background="pink")
+        self.tab_window.pack(side=tk.TOP, padx=PAD, expand=1, fill=tk.BOTH)
         
         #Widgets
         #   control widgets
-        self.COM_widget(self.controls)
-        self.baud_widget(self.controls)
-        self.connect_widget(self.controls)
+        self.COM = ttk.Label(self.controls, text="COM Port:").pack(side=tk.LEFT, padx=PAD)
+        self.port_entry = ttk.Entry(self.controls, width=10)
+        self.port_entry.insert(0, "COM3")
+        self.port_entry.pack(side=tk.LEFT, padx=PAD)
+
+        self.spacer(self.controls, multiplier=2)
+
+        self.baud = ttk.Label(self.controls, text="Baud:").pack(side=tk.LEFT, padx=PAD)
+        self.baud_entry = ttk.Entry(self.controls, width=8)
+        self.baud_entry.insert(0, "115200")
+        self.baud_entry.pack(side=tk.LEFT, padx=PAD)
+
+        self.spacer(self.controls, multiplier=8)
+
+        self.connect_btn = ttk.Button(self.controls, text="Connect", command=self.toggle_connection).pack(side=tk.LEFT, padx=PAD)
+
         #   coord widgets
         self.node = self.subframe(self.coords, tk.TOP)
         self.node_var = tk.StringVar(value="--")
@@ -51,39 +66,11 @@ class DevicePanel:
         ttk.Label(self.alt, text="Altitude (m):").pack(side=tk.LEFT)
         ttk.Label(self.alt, textvariable=self.alt_var).pack(side=tk.LEFT)
 
-        #Placement
-        #   control widgets
-        self.COM_place(tk.LEFT)
-        self.spacer(self.controls, multiplier=2)
-        self.baud_place(tk.LEFT)
-        self.spacer(self.controls, multiplier=8)
-        self.connect_place()
-        #   coord widgets
+        #   data tab
+        self.raw_data = tk.Text(self.tab_window, height=10, state=tk.DISABLED).pack(expand=True, fill=tk.BOTH)
 
-    #widget functions
     def spacer(self, parent, place = tk.LEFT, multiplier = 1):
         ttk.Separator(parent).pack(side= place, padx=PAD*multiplier)
-
-    def COM_widget(self, parent):
-        self.COM = ttk.Label(master=parent, text="COM Port:")
-        self.port_entry = ttk.Entry(master=parent, width=10)
-        self.port_entry.insert(0, "COM3")
-    def COM_place(self, place = tk.LEFT):
-        self.COM.pack(side=place, padx=PAD)
-        self.port_entry.pack(side=place, padx=PAD)
-
-    def baud_widget(self, parent):
-        self.baud = ttk.Label(master=parent, text="Baud:")
-        self.baud_entry = ttk.Entry(master=parent, width=8)
-        self.baud_entry.insert(0, "115200")
-    def baud_place(self, place = tk.LEFT):
-        self.baud.pack(side=place, padx=PAD)
-        self.baud_entry.pack(side=place, padx=PAD)
-
-    def connect_widget(self, parent):
-        self.connect_btn = ttk.Button(parent, text="Connect", command=self.toggle_connection)
-    def connect_place(self, place = tk.LEFT):
-        self.connect_btn.pack(side=place, padx=PAD)
 
     def toggle_connection(self):
         if not self.running:
@@ -105,8 +92,35 @@ class DevicePanel:
                 self.serial_port.close()
             self.connect_btn.config(text="Connect")
         
+    def read_serial(self):
+        while self.running:
+            try:
+                line = self.serial_port.readline().decode(errors="ignore").strip()
+                if line:
+                    self.raw_text.insert("end", line + "\n")
+                    self.raw_text.see("end")
+                    self.parse_line(line)
+            except:
+                break
 
-    #
+    def parse_line(self, line):
+        """
+        Example:
+        109s714:Node 1 | Lat: 37.8325760 Lon: -76.9354560 Fix: 1 Alt: 56 m
+        """
+
+        pattern = r"Node\s+(\d+)\s+\|\s+Lat:\s+([-\d.]+)\s+Lon:\s+([-\d.]+)\s+Fix:\s+(\d+)\s+Alt:\s+([-\d.]+)"
+        match = re.search(pattern, line)
+
+        if match:
+            node, lat, lon, fix, alt = match.groups()
+
+            self.node_var.set(node)
+            self.lat_var.set(f"{float(lat):.6f}")
+            self.lon_var.set(f"{float(lon):.6f}")
+            self.fix_var.set(fix)
+            self.alt_var.set(f"{float(alt):.1f}")
+
     def pack_frame(self, frame, place):
         frame.pack(padx=PAD, pady=PAD, side=place, expand=1, fill=tk.BOTH)
 
