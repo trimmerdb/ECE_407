@@ -8,11 +8,6 @@ WIN_WIDTH = 1100
 WIN_HEIGHT = 600
 PAD = 5
 
-# class subframe:
-#     def __init__(self, parent, pack):
-#         self.subframe = tk.Frame(master=parent, background="purple")
-#         self.subframe.pack(padx=PAD, pady=PAD, side=pack, expand=1, fill = tk.BOTH)
-
 class DevicePanel:
     def __init__(self, parent, title):
         self.frame = tk.LabelFrame(root, text=title)
@@ -23,18 +18,47 @@ class DevicePanel:
 
         #subframes
         self.controls = self.subframe(self.frame, tk.TOP)
+        self.coords = self.subframe(self.frame, tk.TOP)
         
         #Widgets
+        #   control widgets
         self.COM_widget(self.controls)
         self.baud_widget(self.controls)
         self.connect_widget(self.controls)
+        #   coord widgets
+        self.node = self.subframe(self.coords, tk.TOP)
+        self.node_var = tk.StringVar(value="--")
+        ttk.Label(self.node, text="Node:").pack(side=tk.LEFT)
+        ttk.Label(self.node, textvariable=self.node_var, font=("Arial", 11, "bold")).pack(side=tk.LEFT)
+
+        self.lat = self.subframe(self.coords, tk.TOP)
+        self.lat_var = tk.StringVar(value="--")
+        ttk.Label(self.lat, text="Latitude:").pack(side=tk.LEFT)
+        ttk.Label(self.lat, textvariable=self.lat_var).pack(side=tk.LEFT)
+
+        self.lon = self.subframe(self.coords, tk.TOP)
+        self.lon_var = tk.StringVar(value="--")
+        ttk.Label(self.lon, text="Longitude:").pack(side=tk.LEFT)
+        ttk.Label(self.lon, textvariable=self.lon_var).pack(side=tk.LEFT)
+
+        self.fix = self.subframe(self.coords, tk.TOP)
+        self.fix_var = tk.StringVar(value="--")
+        ttk.Label(self.fix, text="Fix:").pack(side=tk.LEFT)
+        ttk.Label(self.fix, textvariable=self.fix_var).pack(side=tk.LEFT)
+
+        self.alt = self.subframe(self.coords, tk.TOP)
+        self.alt_var = tk.StringVar(value="--")
+        ttk.Label(self.alt, text="Altitude (m):").pack(side=tk.LEFT)
+        ttk.Label(self.alt, textvariable=self.alt_var).pack(side=tk.LEFT)
 
         #Placement
+        #   control widgets
         self.COM_place(tk.LEFT)
         self.spacer(self.controls, multiplier=2)
         self.baud_place(tk.LEFT)
         self.spacer(self.controls, multiplier=8)
         self.connect_place()
+        #   coord widgets
 
     #widget functions
     def spacer(self, parent, place = tk.LEFT, multiplier = 1):
