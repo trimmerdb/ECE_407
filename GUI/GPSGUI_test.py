@@ -19,7 +19,7 @@ class DevicePanel:
         #subframes
         self.controls = self.subframe(self.frame, tk.TOP)
         self.coords = self.subframe(self.frame, tk.TOP)
-        self.tab_window = tk.LabelFrame(master=self.frame, background="pink")
+        self.tab_window = tk.LabelFrame(master=self.frame)
         self.tab_window.pack(side=tk.TOP, padx=PAD, expand=1, fill=tk.BOTH)
         
         #Widgets
@@ -67,7 +67,20 @@ class DevicePanel:
         ttk.Label(self.alt, textvariable=self.alt_var).pack(side=tk.LEFT)
 
         #   data tab
-        self.raw_data = tk.Text(self.tab_window, width=10, height=10, state=tk.DISABLED).pack(expand=True, fill=tk.BOTH)
+        #       tab options buttons
+        self.tab = tk.StringVar(value="Raw Data")
+        self.tab_sel_frame=self.subframe(self.tab_window, tk.TOP)
+        self.tab1 = self.RadioSetup(self.tab_sel_frame, "Raw Data")
+        self.tab2 = self.RadioSetup(self.tab_sel_frame, "Map")
+        self.tab3 = self.RadioSetup(self.tab_sel_frame, "Compass")
+
+        #       tab content
+        self.tab_cont_frame = tk.Frame(self.tab_window)
+        self.tab_cont_frame.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
+        self.raw_data = tk.Text(self.tab_cont_frame, width=10, height=10, state=tk.DISABLED)
+        self.map = tk.Label(self.tab_cont_frame, text="Map tab")
+        self.compass = tk.Label(self.tab_cont_frame, text="Compass tab?")
+        self.tab_switch()
 
     def spacer(self, parent, place = tk.LEFT, multiplier = 1):
         ttk.Separator(parent).pack(side= place, padx=PAD*multiplier)
@@ -121,13 +134,29 @@ class DevicePanel:
             self.fix_var.set(fix)
             self.alt_var.set(f"{float(alt):.1f}")
 
+    def tab_switch(self):
+        self.raw_data.pack_forget()
+        self.map.pack_forget()
+        self.compass.pack_forget()
+
+        match self.tab.get():
+            case "Raw Data":
+                self.raw_data.pack(expand=True, fill=tk.BOTH)
+            case "Map":
+                self.map.pack()
+            case "Compass":
+                self.compass.pack()
+
     def pack_frame(self, frame, place):
         frame.pack(padx=PAD, pady=PAD, side=place, expand=1, fill=tk.BOTH)
 
-    def subframe(self, parent, pack):
-        subframe = tk.Frame(master=parent, background="purple")
-        subframe.pack(padx=PAD, pady=PAD, side=tk.TOP, expand=0, fill=tk.X)
+    def subframe(self, parent, pack=tk.TOP):
+        subframe = tk.Frame(master=parent)
+        subframe.pack(padx=PAD, pady=PAD, side=pack, expand=0, fill=tk.X)
         return subframe
+    
+    def RadioSetup(self, parent, text):
+        return tk.Radiobutton(parent,text=text, variable=self.tab, value=text, indicator=0, command=self.tab_switch, background="pink").pack(side=tk.LEFT)
 
 class SerialGUI:
     def __init__(self, root):
