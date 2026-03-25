@@ -10,7 +10,8 @@ TODO
 map
 add scrolling to raw data
 track movement on map?
-ad radio modification bits
+add radio modification bits
+add callsign
 '''
 WIN_WIDTH = 1100
 WIN_HEIGHT = 600
@@ -31,8 +32,8 @@ class SerialGUI:
         #subframes
         self.controls = self.subframe(root, tk.TOP)
         # self.coords = self.subframe(self.frame, tk.TOP)
-        self.left_controls = controlPane(self.controls, "Module 1")
-        self.right_controls = controlPane(self.controls, "Module 2")
+        self.left_controls = controlPane(self.controls, "Module 1 Configuration")
+        self.right_controls = controlPane(self.controls, "Module 2 Configuration")
         self.tab_window = tk.Frame(master=root)
         self.tab_window.pack(side=tk.TOP, padx=PAD, expand=1, fill=tk.BOTH)
         
@@ -245,13 +246,18 @@ class controlPane:
 
 class dataFrame:
     def __init__(self, parent):
-        self.frame_left = tk.LabelFrame(master=parent, text="Incoming Module 1 Data")
-        self.frame_right = tk.LabelFrame(master=parent, text="Incoming Module 2 Data")
+        self.frame_left = tk.Frame(master=parent)
+        self.frame_right = tk.Frame(master=parent)
+
+        self.label_left = tk.Label(master=self.frame_left, text="Incoming Module 1 Data")
+        self.label_left.pack(side=tk.TOP)
+        self.label_right = tk.Label(master=self.frame_right, text="Incoming Module 2 Data")
+        self.label_right.pack(side=tk.TOP)
 
         self.text_left = tk.Text(self.frame_left, width=10, height=10, state=tk.DISABLED)
-        self.text_left.pack(expand=True, fill=tk.BOTH)
+        self.text_left.pack(side=tk.TOP, expand=True, fill=tk.BOTH, padx=PAD, pady=PAD)
         self.text_right = tk.Text(self.frame_right, width=10, height=10, state=tk.DISABLED)
-        self.text_right.pack(expand=True, fill=tk.BOTH)
+        self.text_right.pack(side=tk.TOP, expand=True, fill=tk.BOTH, padx=PAD, pady=PAD)
 
     def pack(self):
         self.frame_left.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
