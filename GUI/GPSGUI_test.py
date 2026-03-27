@@ -13,15 +13,21 @@ track movement on map?
 add radio modification bits
 add callsign
 '''
-WIN_WIDTH = 1100
-WIN_HEIGHT = 600
+WIN_WIDTH = 925
+WIN_HEIGHT = 220
 PAD = 5
+mod_1_color = "thistle1"
+mod_2_color = "lightcyan2"
+tab_color = "darkseagreen2"
 
 class SerialGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Dual GPS Monitor")
-        self.root.geometry(f"{WIN_WIDTH}x{WIN_HEIGHT}")
+        self.root.geometry(f"{WIN_WIDTH}x{3*WIN_HEIGHT}")
+        self.root.minsize(width=WIN_WIDTH, height=WIN_HEIGHT)
+        # self.icon = tk.PhotoImage(file="GUI_icon.png")
+        # self.root.iconphoto(False, self.icon)
 
         # self.frame = tk.LabelFrame(root, text=title)
         # self.frame.pack(padx=PAD, pady=PAD, side=tk.LEFT, expand=1, fill=tk.BOTH)
@@ -32,8 +38,8 @@ class SerialGUI:
         #subframes
         self.controls = self.subframe(root, tk.TOP)
         # self.coords = self.subframe(self.frame, tk.TOP)
-        self.left_controls = controlPane(self.controls, "Module 1 Configuration")
-        self.right_controls = controlPane(self.controls, "Module 2 Configuration")
+        self.left_controls = controlPane(self.controls, "Module 1 Configuration", mod_1_color)
+        self.right_controls = controlPane(self.controls, "Module 2 Configuration", mod_2_color)
         self.tab_window = tk.Frame(master=root)
         self.tab_window.pack(side=tk.TOP, padx=PAD, expand=1, fill=tk.BOTH)
         
@@ -129,13 +135,13 @@ class SerialGUI:
         return subframe
     
     def RadioSetup(self, parent, text):
-        return tk.Radiobutton(parent, text=text, variable=self.tab, value=text, indicator=0, command=self.tab_switch, background="pink").pack(side=tk.LEFT)
+        return tk.Radiobutton(parent, text=text, variable=self.tab, value=text, indicator=0, command=self.tab_switch, background=tab_color).pack(side=tk.LEFT)
 
         # self.left_frame = DevicePanel(self, "Module 1")
         # self.left_frame = DevicePanel(self, "Module 2")
 
 class controlPane:
-    def __init__(self, parent, title):
+    def __init__(self, parent, title, color):
         self.frame_pack = tk.TOP
         self.cont_pack = tk.LEFT
         self.frame = tk.LabelFrame(parent, text=title)
@@ -143,6 +149,7 @@ class controlPane:
 
         self.controls = self.subframe(self.frame, self.frame_pack)
         self.coords = self.subframe(self.frame, self.frame_pack)
+        # self.controls.setPallete(color)
 
         #   control widgets
         self.COM = ttk.Label(self.controls, text="COM Port:").pack(side=self.cont_pack, padx=PAD)
@@ -186,6 +193,8 @@ class controlPane:
         self.alt_var = tk.StringVar(value="--")
         ttk.Label(self.alt, text="Altitude (m):").pack(side=self.cont_pack)
         ttk.Label(self.alt, textvariable=self.alt_var).pack(side=self.cont_pack)
+
+        self.recolor_children(self.frame, color)
 
     def toggle_connection(self):
         if not self.running:
@@ -243,6 +252,25 @@ class controlPane:
             subframe = tk.Frame(master=parent)
             subframe.pack(padx=PAD, pady=PAD, side=pack, expand=0, fill=tk.X)
             return subframe
+    
+    def recolor_children(self, frame, color):
+        for child in frame.winfo_children():
+            child_type = child.winfo_class()
+            match child_type:
+                case "Frame":
+                    self.recolor_children(child, color)
+                    # child.configure(bg=color)
+                case "TLabel":
+                    child.configure(background=color)
+                case "TEntry":
+                    pass
+                case "TSeparator":
+                    pass
+                case "TButton":
+                    pass
+                case _:
+                    print(child.winfo_class() + " Not recolored")
+            frame.configure(bg=color)
 
 class dataFrame:
     def __init__(self, parent):
@@ -259,6 +287,9 @@ class dataFrame:
         self.text_right = tk.Text(self.frame_right, width=10, height=10, state=tk.DISABLED)
         self.text_right.pack(side=tk.TOP, expand=True, fill=tk.BOTH, padx=PAD, pady=PAD)
 
+        self.recolor_children(self.frame_left, mod_1_color)
+        self.recolor_children(self.frame_right, mod_2_color)
+
     def pack(self):
         self.frame_left.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         self.frame_right.pack(side=tk.RIGHT, expand=True, fill=tk.BOTH)
@@ -266,6 +297,21 @@ class dataFrame:
     def pack_forget(self):
         self.frame_left.pack_forget()
         self.frame_right.pack_forget()
+
+    def recolor_children(self, frame, color):
+        for child in frame.winfo_children():
+            child_type = child.winfo_class()
+            match child_type:
+                case "Frame":
+                    self.recolor_children(child, color)
+                    # child.configure(bg=color)
+                case "Label":
+                    child.configure(background=color)
+                case "Text":
+                    pass
+                case _:
+                    print(child.winfo_class() + " Not recolored")
+            frame.configure(bg=color)
 
 if __name__ == "__main__":
     root = tk.Tk()
