@@ -1,8 +1,12 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import serial #pip install pyserial
-import threading
-import re
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+# import numpy as np
+from cartopy import crs as ccrs, feature as cfeature # pip install cartopy
+# import threading
+# import re
 
 
 '''
@@ -11,7 +15,9 @@ map
 add scrolling to raw data
 track movement on map?
 add radio modification bits
-add callsign
+add callsign entry
+fix icon
+figure out pyinstaller
 '''
 WIN_WIDTH = 925
 WIN_HEIGHT = 220
@@ -51,67 +57,19 @@ class SerialGUI:
         self.tab_sel_frame=self.subframe(self.tab_window, tk.TOP)
         self.tab1 = self.RadioSetup(self.tab_sel_frame, "Raw Data")
         self.tab2 = self.RadioSetup(self.tab_sel_frame, "Map")
-        self.tab3 = self.RadioSetup(self.tab_sel_frame, "Tab 3 that is very important")
+        self.tab3 = self.RadioSetup(self.tab_sel_frame, "Tab 3 that i probably need to remove now")
 
         #       tab content
         self.tab_cont_frame = tk.Frame(self.tab_window)
         self.tab_cont_frame.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
         self.raw_data = dataFrame(self.tab_cont_frame)
-        self.map = tk.Label(self.tab_cont_frame, text="Map tab")
+        self.map = mapCont(self.tab_cont_frame)
+        # self.map = tk.Label(self.tab_cont_frame, text="Map tab")
         self.tab_3 = tk.Label(self.tab_cont_frame, text="Tab 3")
         self.tab_switch()
 
     def spacer(self, parent, place = tk.LEFT, multiplier = 1):
         ttk.Separator(parent).pack(side= place, padx=PAD*multiplier)
-
-    # def toggle_connection(self):
-    #     if not self.running:
-    #         try:
-    #             port = self.port_entry.get()
-    #             baud = int(self.baud_entry.get())
-
-    #             self.serial_port = serial.Serial(port, baud, timeout=1)
-    #             self.running = True
-    #             self.connect_btn.config(text="Disconnect")
-
-    #             threading.Thread(target=self.read_serial, daemon=True).start()
-
-    #         except Exception as e:
-    #             messagebox.showerror("Error", str(e))
-    #     else:
-    #         self.running = False
-    #         if self.serial_port:
-    #             self.serial_port.close()
-    #         self.connect_btn.config(text="Connect")
-        
-    # def read_serial(self):
-    #     while self.running:
-    #         try:
-    #             line = self.serial_port.readline().decode(errors="ignore").strip()
-    #             if line:
-    #                 self.raw_text.insert("end", line + "\n")
-    #                 self.raw_text.see("end")
-    #                 self.parse_line(line)
-    #         except:
-    #             break
-
-    # def parse_line(self, line):
-    #     """
-    #     Example:
-    #     109s714:Node 1 | Lat: 37.8325760 Lon: -76.9354560 Fix: 1 Alt: 56 m
-    #     """
-
-    #     pattern = r"Node\s+(\d+)\s+\|\s+Lat:\s+([-\d.]+)\s+Lon:\s+([-\d.]+)\s+Fix:\s+(\d+)\s+Alt:\s+([-\d.]+)"
-    #     match = re.search(pattern, line)
-
-    #     if match:
-    #         node, lat, lon, fix, alt = match.groups()
-
-    #         self.node_var.set(node)
-    #         self.lat_var.set(f"{float(lat):.6f}")
-    #         self.lon_var.set(f"{float(lon):.6f}")
-    #         self.fix_var.set(fix)
-    #         self.alt_var.set(f"{float(alt):.1f}")
 
     def tab_switch(self):
         self.raw_data.pack_forget()
@@ -123,7 +81,7 @@ class SerialGUI:
                 self.raw_data.pack()
             case "Map":
                 self.map.pack()
-            case "Tab 3":
+            case "Tab 3 that i probably need to remove now":
                 self.tab_3.pack()
 
     # def pack_frame(self, frame, place):
@@ -313,7 +271,45 @@ class dataFrame:
                     print(child.winfo_class() + " Not recolored")
             frame.configure(bg=color)
 
+class mapCont:
+    def __init__(self, parent):
+        # self.map_frame = tk.Frame(master=parent, bg = "pink")
+
+        # map config
+        self.fig = plt.figure(frameon=False, layout="constrained")
+        self.ax = plt.subplot(projection=ccrs.PlateCarree(central_longitude=-75))
+
+        self.ax.coastlines()
+        self.ax.add_feature(cfeature.BORDERS, linewidth=0.5, edgecolor='black')
+        self.ax.add_feature(cfeature.STATES, linewidth=0.3, edgecolor='brown')
+
+        # map to frame
+        self.canvas = FigureCanvasTkAgg(self.fig, master = parent)
+        self.canvas.draw()
+        # creating the Matplotlib toolbar
+        self.toolbar = NavigationToolbar2Tk(self.canvas, parent)
+        self.toolbar.update()
+
+        # placing the toolbar on the Tkinter window
+        self.canvas.get_tk_widget().pack()
+        
+    def pack(self):
+        # self.map_frame.pack(expand=True, fill=tk.BOTH)
+
+        self.canvas.get_tk_widget().pack(expand=True, fill=tk.BOTH)
+
+    def pack_forget(self):
+        # self.map_frame.pack_forget()
+
+        self.canvas.get_tk_widget().pack_forget()
+
+
+def quit_me():
+        root.quit()
+        root.destroy()
+
 if __name__ == "__main__":
     root = tk.Tk()
+    root.protocol("WM_DELETE_WINDOW", quit_me)
     app = SerialGUI(root)
     root.mainloop()
