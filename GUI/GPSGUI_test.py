@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 # import numpy as np
 from cartopy import crs as ccrs, feature as cfeature # pip install cartopy
-# import threading
-# import re
+import threading
+import re
 
 
 '''
@@ -16,7 +16,6 @@ add scrolling to raw data
 track movement on map?
 add radio modification bits
 add callsign entry
-fix icon
 figure out pyinstaller
 '''
 WIN_WIDTH = 925
@@ -32,14 +31,12 @@ class SerialGUI:
         self.root.title("Dual GPS Monitor")
         self.root.geometry(f"{WIN_WIDTH}x{3*WIN_HEIGHT}")
         self.root.minsize(width=WIN_WIDTH, height=WIN_HEIGHT)
-        # self.icon = tk.PhotoImage(file="GUI_icon.png")
-        # self.root.iconphoto(False, self.icon)
+        # self.root.pack_propogate(False)
+        self.icon = tk.PhotoImage(file="GUI_icon.png")
+        self.root.iconphoto(False, self.icon)
 
         # self.frame = tk.LabelFrame(root, text=title)
         # self.frame.pack(padx=PAD, pady=PAD, side=tk.LEFT, expand=1, fill=tk.BOTH)
-
-        self.serial_port = None
-        self.running = False
 
         #subframes
         self.controls = self.subframe(root, tk.TOP)
@@ -100,6 +97,9 @@ class SerialGUI:
 
 class controlPane:
     def __init__(self, parent, title, color):
+        self.serial_port = None
+        self.running = False
+
         self.frame_pack = tk.TOP
         self.cont_pack = tk.LEFT
         self.frame = tk.LabelFrame(parent, text=title)
