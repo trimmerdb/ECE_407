@@ -28,7 +28,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#define TX_OUTPUT_POWER                             20        /* dBm */
+#include "user_defines.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -41,7 +41,9 @@ extern "C" {
 #define USE_MODEM_LORA  1
 #define USE_MODEM_FSK   0
 
+#ifndef RF_FREQUENCY
 #define RF_FREQUENCY                                433000000 /* Hz */
+#endif /* TX_OUTPUT_POWER */
 
 #ifndef TX_OUTPUT_POWER   /* please, to change this value, redefine it in USER CODE SECTION */
 #define TX_OUTPUT_POWER                             14        /* dBm */

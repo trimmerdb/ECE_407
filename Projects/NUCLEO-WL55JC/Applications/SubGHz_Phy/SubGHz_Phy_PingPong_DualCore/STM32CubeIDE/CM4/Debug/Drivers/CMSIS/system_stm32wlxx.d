@@ -1,5 +1,5 @@
 Drivers/CMSIS/system_stm32wlxx.o: \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/Common/System/system_stm32wlxx.c \
+ C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/Common/System/system_stm32wlxx.c \
  ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wlxx.h \
  ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wl55xx.h \
  ../../../../../../../../Drivers/CMSIS/Include/core_cm4.h \

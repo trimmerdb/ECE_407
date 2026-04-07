@@ -1,5 +1,5 @@
 Application/User/Core/usart_if.o: \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/Core/Src/usart_if.c \
+ C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/Core/Src/usart_if.c \
  ../../../CM4/Core/Inc/usart_if.h \
  ../../../../../../../../Utilities/trace/adv_trace/stm32_adv_trace.h \
  ../../../CM4/Core/Inc/utilities_conf.h \

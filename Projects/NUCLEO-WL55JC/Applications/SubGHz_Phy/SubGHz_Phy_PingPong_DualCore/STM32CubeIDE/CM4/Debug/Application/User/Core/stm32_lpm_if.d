@@ -1,5 +1,5 @@
 Application/User/Core/stm32_lpm_if.o: \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/Core/Src/stm32_lpm_if.c \
+ C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/Core/Src/stm32_lpm_if.c \
  ../../../CM4/Core/Inc/platform.h \
  ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wlxx.h \
  ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wl55xx.h \

@@ -27,6 +27,7 @@
 #include "stm32_timer.h"
 #include "stm32_seq.h"
 #include "utilities_def.h"
+#include "user_defines.h"
 
 #include "gps_parse.h"
 
@@ -195,7 +196,7 @@ void USART1_DMA_Init(void)
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     huart1.Instance = USART1;
-    huart1.Init.BaudRate = 9600; // match GPS
+    huart1.Init.BaudRate = GPSBAUD; // match GPS
     huart1.Init.WordLength = UART_WORDLENGTH_8B;
     huart1.Init.StopBits = UART_STOPBITS_1;
     huart1.Init.Parity = UART_PARITY_NONE;

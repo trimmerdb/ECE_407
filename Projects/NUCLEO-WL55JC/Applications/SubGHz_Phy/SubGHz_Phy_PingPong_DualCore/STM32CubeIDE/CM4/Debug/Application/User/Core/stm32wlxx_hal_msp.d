@@ -1,5 +1,5 @@
 Application/User/Core/stm32wlxx_hal_msp.o: \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/Core/Src/stm32wlxx_hal_msp.c \
+ C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/Core/Src/stm32wlxx_hal_msp.c \
  ../../../CM4/Core/Inc/main.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h \
  ../../../CM4/Core/Inc/stm32wlxx_hal_conf.h \

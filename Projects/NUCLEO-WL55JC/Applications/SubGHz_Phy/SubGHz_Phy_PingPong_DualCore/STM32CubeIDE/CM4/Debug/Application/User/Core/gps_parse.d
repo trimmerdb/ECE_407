@@ -1,5 +1,5 @@
 Application/User/Core/gps_parse.o: ../Application/User/Core/gps_parse.c \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h \
+ C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h \
  ../../../CM4/Core/Inc/main.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h \
  ../../../CM4/Core/Inc/stm32wlxx_hal_conf.h \
@@ -52,7 +52,7 @@ Application/User/Core/gps_parse.o: ../Application/User/Core/gps_parse.c \
  ../../../../../../../../Utilities/misc/stm32_mem.h \
  ../../../../../../../../Utilities/misc/stm32_tiny_vsnprintf.h \
  ../../../CM4/Core/Inc/utilities_def.h
-C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h:
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h:
 ../../../CM4/Core/Inc/main.h:
 ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h:
 ../../../CM4/Core/Inc/stm32wlxx_hal_conf.h:

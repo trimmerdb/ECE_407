@@ -1,5 +1,5 @@
 Application/User/Core/ipcc.o: \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/Core/Src/ipcc.c \
+ C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/Core/Src/ipcc.c \
  ../../../CM4/Core/Inc/ipcc.h ../../../CM4/Core/Inc/main.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h \
  ../../../CM4/Core/Inc/stm32wlxx_hal_conf.h \

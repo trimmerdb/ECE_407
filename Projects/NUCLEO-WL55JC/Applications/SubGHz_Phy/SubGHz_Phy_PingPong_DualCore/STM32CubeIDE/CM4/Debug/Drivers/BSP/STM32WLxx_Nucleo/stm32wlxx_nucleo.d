@@ -1,7 +1,7 @@
 Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.o: \
- C:/Users/my1du/Repos/ECE_406/Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c \
- C:/Users/my1du/Repos/ECE_406/Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.h \
- C:/Users/my1du/Repos/ECE_406/Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_errno.h \
+ C:/Repositories/ECE_406/Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c \
+ C:/Repositories/ECE_406/Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.h \
+ C:/Repositories/ECE_406/Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_errno.h \
  ../../../Common/Board/stm32wlxx_nucleo_conf.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h \
  ../../../CM4/Core/Inc/stm32wlxx_hal_conf.h \
@@ -39,8 +39,8 @@ Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.o: \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_uart.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_uart_ex.h \
  ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_system.h
-C:/Users/my1du/Repos/ECE_406/Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.h:
-C:/Users/my1du/Repos/ECE_406/Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_errno.h:
+C:/Repositories/ECE_406/Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.h:
+C:/Repositories/ECE_406/Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_errno.h:
 ../../../Common/Board/stm32wlxx_nucleo_conf.h:
 ../../../../../../../../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h:
 ../../../CM4/Core/Inc/stm32wlxx_hal_conf.h:

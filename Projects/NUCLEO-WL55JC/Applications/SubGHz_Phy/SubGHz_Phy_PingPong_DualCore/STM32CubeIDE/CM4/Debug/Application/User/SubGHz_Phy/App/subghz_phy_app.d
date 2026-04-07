@@ -1,5 +1,5 @@
 Application/User/SubGHz_Phy/App/subghz_phy_app.o: \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.c \
+ C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.c \
  ../../../CM4/Core/Inc/platform.h \
  ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wlxx.h \
  ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wl55xx.h \
@@ -52,17 +52,18 @@ Application/User/SubGHz_Phy/App/subghz_phy_app.o: \
  ../../../../../../../../Utilities/misc/stm32_mem.h \
  ../../../../../../../../Utilities/misc/stm32_tiny_vsnprintf.h \
  ../../../CM4/Core/Inc/utilities_def.h \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.h \
+ C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.h \
+ C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/user_defines.h \
  ../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/radio.h \
  ../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/radio_def.h \
  ../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/radio_ex.h \
  ../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/lr_fhss_v1_base_types.h \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h \
+ C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h \
  ../../../CM4/Core/Inc/main.h \
  ../../../../../../../../Utilities/timer/stm32_timer.h \
  ../../../../../../../../Utilities/sequencer/stm32_seq.h \
  ../../../CM4/Core/Inc/utilities_def.h \
- C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/app_version.h \
+ C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/app_version.h \
  ../../../CM4/MbMux/mbmuxif_sys.h ../../../CM4/MbMux/mbmux.h
 ../../../CM4/Core/Inc/platform.h:
 ../../../../../../../../Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wlxx.h:
@@ -118,16 +119,17 @@ Application/User/SubGHz_Phy/App/subghz_phy_app.o: \
 ../../../../../../../../Utilities/misc/stm32_mem.h:
 ../../../../../../../../Utilities/misc/stm32_tiny_vsnprintf.h:
 ../../../CM4/Core/Inc/utilities_def.h:
-C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.h:
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/subghz_phy_app.h:
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/user_defines.h:
 ../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/radio.h:
 ../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/radio_def.h:
 ../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/radio_ex.h:
 ../../../../../../../../Middlewares/Third_Party/SubGHz_Phy/lr_fhss_v1_base_types.h:
-C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h:
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/STM32CubeIDE/CM4/Application/User/Includes/gps_parse.h:
 ../../../CM4/Core/Inc/main.h:
 ../../../../../../../../Utilities/timer/stm32_timer.h:
 ../../../../../../../../Utilities/sequencer/stm32_seq.h:
 ../../../CM4/Core/Inc/utilities_def.h:
-C:/Users/my1du/Repos/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/app_version.h:
+C:/Repositories/ECE_406/Projects/NUCLEO-WL55JC/Applications/SubGHz_Phy/SubGHz_Phy_PingPong_DualCore/CM4/SubGHz_Phy/App/app_version.h:
 ../../../CM4/MbMux/mbmuxif_sys.h:
 ../../../CM4/MbMux/mbmux.h:

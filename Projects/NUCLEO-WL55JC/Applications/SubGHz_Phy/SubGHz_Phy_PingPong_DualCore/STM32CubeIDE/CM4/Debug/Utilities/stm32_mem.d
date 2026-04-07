@@ -1,13 +1,12 @@
-Utilities/stm32_mem.o: \
- C:/Users/my1du/Repos/ECE_406/Utilities/misc/stm32_mem.c \
- C:/Users/my1du/Repos/ECE_406/Utilities/misc/stm32_mem.h \
+Utilities/stm32_mem.o: C:/Repositories/ECE_406/Utilities/misc/stm32_mem.c \
+ C:/Repositories/ECE_406/Utilities/misc/stm32_mem.h \
  ../../../CM4/Core/Inc/utilities_conf.h \
  ../../../../../../../../Drivers/CMSIS/Include/cmsis_compiler.h \
  ../../../../../../../../Drivers/CMSIS/Include/cmsis_gcc.h \
  ../../../../../../../../Utilities/misc/stm32_mem.h \
  ../../../../../../../../Utilities/misc/stm32_tiny_vsnprintf.h \
  ../../../CM4/Core/Inc/utilities_def.h
-C:/Users/my1du/Repos/ECE_406/Utilities/misc/stm32_mem.h:
+C:/Repositories/ECE_406/Utilities/misc/stm32_mem.h:
 ../../../CM4/Core/Inc/utilities_conf.h:
 ../../../../../../../../Drivers/CMSIS/Include/cmsis_compiler.h:
 ../../../../../../../../Drivers/CMSIS/Include/cmsis_gcc.h:

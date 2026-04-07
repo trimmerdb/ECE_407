@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "user_defines.h"
 /* USER CODE BEGIN Includes */
 #include "stm32_timer.h"
 #include "stm32_seq.h"
@@ -116,7 +116,9 @@ int8_t SnrValue = 0;
 /* Led Timers objects*/
 static UTIL_TIMER_Object_t timerLed;
 /* device state. Master: true, Slave: false*/
-bool isMaster = false;
+#if (MASTERSET == 1)
+bool isMaster = true;
+#endif
 /* random delay to make sure 2 devices will sync*/
 /* the closest the random delays are, the longer it will
    take for the devices to sync when started simultaneously*/
@@ -394,7 +396,8 @@ static void PingPong_Process(void)
         char logBuffer[128];
 
         sprintf(logBuffer,
-                "Node %d | Lat: %ld.%07ld Lon: %ld.%07ld Fix: %u Alt: %ld m\r\n",
+                "%s: Node %d | Lat: %ld.%07ld Lon: %ld.%07ld Fix: %u Alt: %ld m\r\n",
+				CALLSIGN,
                 rxPacket->node_id,
                 rxPacket->latitude / 10000000,
                 labs(rxPacket->latitude % 10000000),

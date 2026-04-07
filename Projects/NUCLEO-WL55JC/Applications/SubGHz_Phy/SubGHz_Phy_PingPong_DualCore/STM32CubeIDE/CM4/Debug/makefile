@@ -66,8 +66,8 @@ all: main-build
 main-build: SubGHz_Phy_PingPong_DualCore_CM4.elf secondary-outputs
 
 # Tool invocations
-SubGHz_Phy_PingPong_DualCore_CM4.elf SubGHz_Phy_PingPong_DualCore_CM4.map: $(OBJS) $(USER_OBJS) C:\Users\my1du\Repos\ECE_406\Projects\NUCLEO-WL55JC\Applications\SubGHz_Phy\SubGHz_Phy_PingPong_DualCore\STM32CubeIDE\CM4\STM32WL55JCIX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "SubGHz_Phy_PingPong_DualCore_CM4.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\my1du\Repos\ECE_406\Projects\NUCLEO-WL55JC\Applications\SubGHz_Phy\SubGHz_Phy_PingPong_DualCore\STM32CubeIDE\CM4\STM32WL55JCIX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SubGHz_Phy_PingPong_DualCore_CM4.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+SubGHz_Phy_PingPong_DualCore_CM4.elf SubGHz_Phy_PingPong_DualCore_CM4.map: $(OBJS) $(USER_OBJS) C:\Repositories\ECE_406\Projects\NUCLEO-WL55JC\Applications\SubGHz_Phy\SubGHz_Phy_PingPong_DualCore\STM32CubeIDE\CM4\STM32WL55JCIX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "SubGHz_Phy_PingPong_DualCore_CM4.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Repositories\ECE_406\Projects\NUCLEO-WL55JC\Applications\SubGHz_Phy\SubGHz_Phy_PingPong_DualCore\STM32CubeIDE\CM4\STM32WL55JCIX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SubGHz_Phy_PingPong_DualCore_CM4.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
