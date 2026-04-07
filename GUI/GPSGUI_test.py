@@ -35,6 +35,8 @@ class SerialGUI:
         self.icon = tk.PhotoImage(file="GUI_icon.png")
         self.root.iconphoto(False, self.icon)
 
+        # print(f"{self.root.winfo_rootx()} , {self.root.winfo_rooty()}")
+
         # self.frame = tk.LabelFrame(root, text=title)
         # self.frame.pack(padx=PAD, pady=PAD, side=tk.LEFT, expand=1, fill=tk.BOTH)
 
@@ -273,7 +275,7 @@ class dataFrame:
 
 class mapCont:
     def __init__(self, parent):
-        # self.map_frame = tk.Frame(master=parent, bg = "pink")
+        self.map_frame = tk.Frame(master=parent, bg = "pink")
 
         # map config
         self.fig = plt.figure(frameon=False, layout="constrained")
@@ -284,24 +286,24 @@ class mapCont:
         self.ax.add_feature(cfeature.STATES, linewidth=0.3, edgecolor='brown')
 
         # map to frame
-        self.canvas = FigureCanvasTkAgg(self.fig, master = parent)
+        self.canvas = FigureCanvasTkAgg(self.fig, master = self.map_frame)
         self.canvas.draw()
         # creating the Matplotlib toolbar
-        self.toolbar = NavigationToolbar2Tk(self.canvas, parent)
+        self.toolbar = NavigationToolbar2Tk(self.canvas, self.map_frame)
         self.toolbar.update()
 
         # placing the toolbar on the Tkinter window
-        self.canvas.get_tk_widget().pack()
+        self.canvas.get_tk_widget().pack(expand=True, fill=tk.BOTH)
         
     def pack(self):
-        # self.map_frame.pack(expand=True, fill=tk.BOTH)
+        self.map_frame.pack(expand=True, fill=tk.BOTH)
 
-        self.canvas.get_tk_widget().pack(expand=True, fill=tk.BOTH)
+        # self.canvas.get_tk_widget().pack(expand=True, fill=tk.BOTH)
 
     def pack_forget(self):
-        # self.map_frame.pack_forget()
+        self.map_frame.pack_forget()
 
-        self.canvas.get_tk_widget().pack_forget()
+        # self.canvas.get_tk_widget().pack_forget()
 
 
 def quit_me():
