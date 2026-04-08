@@ -45,20 +45,18 @@ class SerialGUI:
         # self.frame = tk.LabelFrame(root, text=title)
         # self.frame.pack(padx=PAD, pady=PAD, side=tk.LEFT, expand=1, fill=tk.BOTH)
 
-        self.parser = parser()
         self.serial_left = serial_connection()
         self.serial_right = serial_connection()
 
         #subframes
         self.controls = self.subframe(root, tk.TOP)
         # self.coords = self.subframe(self.frame, tk.TOP)
-        self.left_controls = controlFrame(self.controls, self.parser, "Module 1 Configuration", MOD_1_COLOR)
-        self.right_controls = controlFrame(self.controls, self.parser, "Module 2 Configuration", MOD_2_COLOR)
+        self.left_controls = controlFrame(self.controls, self.serial_left, "Module 1 Configuration", MOD_1_COLOR)
+        self.right_controls = controlFrame(self.controls, self.serial_right, "Module 2 Configuration", MOD_2_COLOR)
         self.tab_window = tk.Frame(master=root)
         self.tab_window.pack(side=tk.TOP, padx=PAD, expand=1, fill=tk.BOTH)
         
         #Widgets
-
         #   data tab
         #       tab options buttons
         self.tab = tk.StringVar(value="Raw Data")
@@ -70,7 +68,7 @@ class SerialGUI:
         #       tab content
         self.tab_cont_frame = tk.Frame(self.tab_window)
         self.tab_cont_frame.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
-        self.raw_data = dataFrame(self.tab_cont_frame, self.parser)
+        self.raw_data = dataFrame(self.tab_cont_frame)
         # self.map = mapCont(self.tab_cont_frame)
         self.map = tk.Label(self.tab_cont_frame, text="Map tab")
         self.tab_3 = tk.Label(self.tab_cont_frame, text="Tab 3")
@@ -122,6 +120,8 @@ class serial_connection:
         self.running = False
         self.com_port = com_port
         self.baud_rate = baud_rate
+        self.line = "1"
+        self.new_line = "2"
 
     def set_com(self, com_port):
         self.com_port = com_port
@@ -130,70 +130,47 @@ class serial_connection:
         self.baud_rate = baud_rate
 
     def toggle_connection(self):
-        try:
-            self.serial_port = serial.Serial(self.com_port, self.baud_rate, timeout=1)
-            self.running = True
+        if not self.running:
+            try:
+                self.serial_port = serial.Serial(self.com_port, self.baud_rate, timeout=1)
+                self.running = True
 
-            threading.Thread(target=self.read_serial, daemon=True).start()
-        except Exception as e:
-                messagebox.showerror("Error", str(e))
+                threading.Thread(target=self.read_serial, daemon=True).start()
+            except Exception as e:
+                    messagebox.showerror("Error", str(e))
+        else:
+            self.running = False
+            if self.serial_port:
+                self.serial_port.close()
 
-class parser:
-    def __init__(self):
-        # self.serial_port = None
-        # self.running = False
-
-        # self.port_entry = DFEAULT_PORT
-        # self.baud_entry = DEFAULT_BAUD
-
-        self.line = "1"
-        self.new_line = "2"
-
-    def toggle_connection(self, serial):
-        if not serial.running:
-            serial.toggle_connection()
-    
     def get_line(self):
         if self.line != self.new_line:
             self.line = self.new_line
-            return self.line
-        else:
-            return ""
+        return self.line
 
-    def read_serial(self, serial):
-        while serial.running:
+    def read_serial(self):
+        while self.running:
             try:
-                line = serial.serial_port.readline().decode(errors="ignore").strip()
+                line = self.serial_port.readline().decode(errors="ignore").strip()
                 if line:
                     self.new_line = line
                     # print("line updated")
             except:
                 break
-    
-    # def set_port(self, value=DFEAULT_PORT):
-    #     self.port_entry = value
-    
-    # def set_baud(self, value=DEFAULT_BAUD):
-    #     self.baud_entry = int(value)
-    
-    def get_running(self, serial):
-        return serial.running
+
+    def get_running(self):
+        return self.running
 
 class controlFrame:
-    def __init__(self, parent, parser, title, color):
+    def __init__(self, parent, serial, title, color):
         self.frame_pack = tk.TOP
         self.cont_pack = tk.LEFT
         self.frame = tk.LabelFrame(parent, text=title)
         self.frame.pack(side=tk.LEFT)
         self.parent = parent
-        self.parser = parser
-        self.parsing_now = False
+        self.serial = serial
+        # self.parsing_now = False
 
-        match title:
-            case "Module 1 Configuration":
-                self.serial = parent.serial_left
-            case "Module 2 Configuration":
-                self.serial = parent.serial_right
 
         self.controls = self.subframe(self.frame, self.frame_pack)
         self.coords = self.subframe(self.frame, self.frame_pack)
@@ -247,9 +224,11 @@ class controlFrame:
     
     def update_outputs(self):
         # print("attempted value update")
-        if(self.parser.get_running()):# and not self.parsing_now):
-            print("parsing")
-            self.parse_line(self.parser.get_line())
+        self.serial.set_com(self.port_entry.get())
+        self.serial.set_baud(int(self.baud_entry.get()))
+        if(self.serial.get_running()):# and not self.parsing_now):
+            # print("parsing")
+            self.parse_line(self.serial.get_line())
 
     def parse_line(self, line):
         """
@@ -273,7 +252,8 @@ class controlFrame:
         # self.parsing_now = False
     
     def update_entries(self):
-        if self.parser.toggle_connection(self.serial):
+        self.serial.toggle_connection()
+        if self.serial.get_running():
             self.connect_btn.config(text="Disconnect")
         else:
             self.connect_btn.config(text="Connect")
@@ -307,7 +287,7 @@ class controlFrame:
             frame.configure(bg=color)
 
 class dataFrame:
-    def __init__(self, parent, parser):
+    def __init__(self, parent):
         self.frame_left = tk.Frame(master=parent)
         self.frame_right = tk.Frame(master=parent)
 
