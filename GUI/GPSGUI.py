@@ -22,7 +22,7 @@ WIN_WIDTH = 925
 WIN_HEIGHT = 220
 PAD = 5
 
-DFEAULT_PORT = "COM9"
+DEFAULT_PORT = "COM9"
 DEFAULT_BAUD = 115200
 
 MOD_1_COLOR = "thistle1"
@@ -46,12 +46,14 @@ class SerialGUI:
         # self.frame.pack(padx=PAD, pady=PAD, side=tk.LEFT, expand=1, fill=tk.BOTH)
 
         self.parser = parser()
+        self.serial_left = serial_connection()
+        self.serial_right = serial_connection()
 
         #subframes
         self.controls = self.subframe(root, tk.TOP)
         # self.coords = self.subframe(self.frame, tk.TOP)
-        self.left_controls = controlPane(self.controls, self.parser, "Module 1 Configuration", MOD_1_COLOR)
-        self.right_controls = controlPane(self.controls, self.parser, "Module 2 Configuration", MOD_2_COLOR)
+        self.left_controls = controlFrame(self.controls, self.parser, "Module 1 Configuration", MOD_1_COLOR)
+        self.right_controls = controlFrame(self.controls, self.parser, "Module 2 Configuration", MOD_2_COLOR)
         self.tab_window = tk.Frame(master=root)
         self.tab_window.pack(side=tk.TOP, padx=PAD, expand=1, fill=tk.BOTH)
         
@@ -79,6 +81,8 @@ class SerialGUI:
     def loop(self):
         self.left_controls.update_outputs()
         self.right_controls.update_outputs()
+
+        # self.raw_data.read_serial()
 
         self.root.after(500,self.loop)
 
@@ -112,37 +116,42 @@ class SerialGUI:
         # self.left_frame = DevicePanel(self, "Module 1")
         # self.left_frame = DevicePanel(self, "Module 2")
 
-class parser:
-    def __init__(self):
+class serial_connection:
+    def __init__(self, com_port=DEFAULT_PORT, baud_rate=DEFAULT_BAUD):
         self.serial_port = None
         self.running = False
+        self.com_port = com_port
+        self.baud_rate = baud_rate
 
-        self.port_entry = DFEAULT_PORT
-        self.baud_entry = DEFAULT_BAUD
+    def set_com(self, com_port):
+        self.com_port = com_port
+    
+    def set_baud(self, baud_rate):
+        self.baud_rate = baud_rate
+
+    def toggle_connection(self):
+        try:
+            self.serial_port = serial.Serial(self.com_port, self.baud_rate, timeout=1)
+            self.running = True
+
+            threading.Thread(target=self.read_serial, daemon=True).start()
+        except Exception as e:
+                messagebox.showerror("Error", str(e))
+
+class parser:
+    def __init__(self):
+        # self.serial_port = None
+        # self.running = False
+
+        # self.port_entry = DFEAULT_PORT
+        # self.baud_entry = DEFAULT_BAUD
 
         self.line = "1"
         self.new_line = "2"
 
-    def toggle_connection(self, button):
-        if not self.running:
-            try:
-                self.serial_port = serial.Serial(self.port_entry, self.baud_entry, timeout=1)
-                self.running = True
-                # self.connect_btn.config(text="Disconnect")
-                button.config(text="Disconnect")
-
-                threading.Thread(target=self.read_serial, daemon=True).start()
-                # print("connection ON")
-
-            except Exception as e:
-                messagebox.showerror("Error", str(e))
-        else:
-            self.running = False
-            if self.serial_port:
-                self.serial_port.close()
-            # self.connect_btn.config(text="Connect")
-            button.config(text="Connect")
-            # print("connection OFF")
+    def toggle_connection(self, serial):
+        if not serial.running:
+            serial.toggle_connection()
     
     def get_line(self):
         if self.line != self.new_line:
@@ -151,29 +160,26 @@ class parser:
         else:
             return ""
 
-    def read_serial(self):
-        while self.running:
+    def read_serial(self, serial):
+        while serial.running:
             try:
-                line = self.serial_port.readline().decode(errors="ignore").strip()
+                line = serial.serial_port.readline().decode(errors="ignore").strip()
                 if line:
-                    # self.raw_text.insert("end", line + "\n")
-                    # self.raw_text.see("end")
-                    # self.parse_line(line)
                     self.new_line = line
                     # print("line updated")
             except:
                 break
     
-    def set_port(self, value=DFEAULT_PORT):
-        self.port_entry = value
+    # def set_port(self, value=DFEAULT_PORT):
+    #     self.port_entry = value
     
-    def set_baud(self, value=DEFAULT_BAUD):
-        self.baud_entry = int(value)
+    # def set_baud(self, value=DEFAULT_BAUD):
+    #     self.baud_entry = int(value)
     
-    def get_running(self):
-        return self.running
+    def get_running(self, serial):
+        return serial.running
 
-class controlPane:
+class controlFrame:
     def __init__(self, parent, parser, title, color):
         self.frame_pack = tk.TOP
         self.cont_pack = tk.LEFT
@@ -183,6 +189,12 @@ class controlPane:
         self.parser = parser
         self.parsing_now = False
 
+        match title:
+            case "Module 1 Configuration":
+                self.serial = parent.serial_left
+            case "Module 2 Configuration":
+                self.serial = parent.serial_right
+
         self.controls = self.subframe(self.frame, self.frame_pack)
         self.coords = self.subframe(self.frame, self.frame_pack)
         # self.controls.setPallete(color)
@@ -190,7 +202,7 @@ class controlPane:
         #   control widgets
         self.COM = ttk.Label(self.controls, text="COM Port:").pack(side=self.cont_pack, padx=PAD)
         self.port_entry = ttk.Entry(self.controls, width=10)
-        self.port_entry.insert(0, DFEAULT_PORT)
+        self.port_entry.insert(0, DEFAULT_PORT)
         self.port_entry.pack(side=self.cont_pack, padx=PAD)
 
         self.spacer(self.controls, multiplier=2)
@@ -235,8 +247,8 @@ class controlPane:
     
     def update_outputs(self):
         # print("attempted value update")
-        if(self.parser.get_running() and not self.parsing_now):
-            # print("parsing")
+        if(self.parser.get_running()):# and not self.parsing_now):
+            print("parsing")
             self.parse_line(self.parser.get_line())
 
     def parse_line(self, line):
@@ -244,7 +256,7 @@ class controlPane:
         Example:
         109s714:Node 1 | Lat: 37.8325760 Lon: -76.9354560 Fix: 1 Alt: 56 m
         """
-        self.parsing_now = True
+        # self.parsing_now = True
 
         pattern = r"Node\s+(\d+)\s+\|\s+Lat:\s+([-\d.]+)\s+Lon:\s+([-\d.]+)\s+Fix:\s+(\d+)\s+Alt:\s+([-\d.]+)"
         match = re.search(pattern, line)
@@ -258,12 +270,14 @@ class controlPane:
             self.fix_var.set(fix)
             self.alt_var.set(f"{float(alt):.1f}")
         
-        self.parsing_now = False
+        # self.parsing_now = False
     
     def update_entries(self):
-        self.parser.set_port(self.port_entry.get())
-        self.parser.set_baud(self.baud_entry.get())
-        self.parser.toggle_connection(self.connect_btn)
+        if self.parser.toggle_connection(self.serial):
+            self.connect_btn.config(text="Disconnect")
+        else:
+            self.connect_btn.config(text="Connect")
+
 
     def spacer(self, parent, place = tk.LEFT, multiplier = 1):
         ttk.Separator(parent).pack(side= place, padx=PAD*multiplier)
@@ -334,7 +348,7 @@ class dataFrame:
             frame.configure(bg=color)
 
     def read_serial(self):
-        while self.running:
+        if self.running:
             try:
                 line = self.get_line()
                 if line:
@@ -342,7 +356,7 @@ class dataFrame:
                     self.raw_text.see("end")
                     # self.parse_line(line)
             except:
-                break
+                pass
 
 class mapCont:
     def __init__(self, parent):
