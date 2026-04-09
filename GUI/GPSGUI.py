@@ -77,6 +77,14 @@ class SerialGUI:
     def spacer(self, parent, place = tk.LEFT, multiplier = 1):
         ttk.Separator(parent).pack(side= place, padx=PAD*multiplier)
 
+    def subframe(self, parent, pack=tk.TOP):
+        subframe = tk.Frame(master=parent)
+        subframe.pack(padx=PAD, pady=PAD, side=pack, expand=0, fill=tk.X)
+        return subframe
+    
+    def RadioSetup(self, parent, text):
+        return tk.Radiobutton(parent, text=text, variable=self.tab, value=text, indicator=0, command=self.tab_switch, background=TAB_COLOR).pack(side=tk.LEFT)
+
     def tab_switch(self):
         self.raw_data.pack_forget()
         self.map.pack_forget()
@@ -89,14 +97,6 @@ class SerialGUI:
                 self.map.pack()
             case "Tab 3 that i probably need to remove now":
                 self.tab_3.pack()
-
-    def subframe(self, parent, pack=tk.TOP):
-        subframe = tk.Frame(master=parent)
-        subframe.pack(padx=PAD, pady=PAD, side=pack, expand=0, fill=tk.X)
-        return subframe
-    
-    def RadioSetup(self, parent, text):
-        return tk.Radiobutton(parent, text=text, variable=self.tab, value=text, indicator=0, command=self.tab_switch, background=TAB_COLOR).pack(side=tk.LEFT)
 
 class serialConnection:
     def __init__(self, name, com_port=DEFAULT_PORT, baud_rate=DEFAULT_BAUD):
@@ -312,26 +312,31 @@ class dataFrame:
 
     def check_for_newline(self, serial1, serial2):
         if(serial1.get_running()):
-            threading.Thread(target=self.update_text, args=serial1, name="Data Left Thread", daemon=True).start()
+            threading.Thread(target=self.update_text, args=[serial1], name="Data Left Thread", daemon=True).start()
         elif(serial2.get_running()):
-            threading.Thread(target=self.update_text, args=serial2, name="Data Right Thread", daemon=True).start()
+            threading.Thread(target=self.update_text, args=[serial2], name="Data Right Thread", daemon=True).start()
 
     def update_text(self, serial):
         while(serial.get_running()):
             line = serial.get_line()
-            print(line)
-            if line:
+            # print(line)
+            if(line and line !=""):
                 match serial.name:
                     case "Left":
-                        self.text_left.configure(state=tk.NORMAL)
-                        self.text_left.insert("end", line + "\n")
-                        self.text_left.see("end")
-                        self.text_left.configure(state=tk.DISABLED)
+                        if(self.text_left.search(pattern=line, index="end", backwards=True) == ""):
+                            self.text_left.configure(state=tk.NORMAL)
+                            self.text_left.insert("end", line + "\n")
+                            self.text_left.see("end")
+                            self.text_left.configure(state=tk.DISABLED)
                     case "Right":
-                        self.text_right.configure(state=tk.NORMAL)
-                        self.text_right.insert("end", line + "\n")
-                        self.text_right.see("end")
-                        self.text_right.configure(state=tk.DISABLED)
+                        if(self.text_right.search(pattern=line, index="end", backwards=True) == ""):
+                            self.text_right.configure(state=tk.NORMAL)
+                            self.text_right.insert("end", line + "\n")
+                            self.text_right.see("end")
+                            self.text_right.configure(state=tk.DISABLED)
+
+        
+
 
 class mapCont:
     def __init__(self, parent):
