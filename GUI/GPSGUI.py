@@ -8,7 +8,6 @@ from cartopy import crs as ccrs, feature as cfeature # pip install cartopy
 import threading
 import re
 
-
 '''
 TODO
 map
@@ -18,6 +17,7 @@ add radio modification bits
 add callsign entry
 figure out pyinstaller
 '''
+
 WIN_WIDTH = 925
 WIN_HEIGHT = 220
 PAD = 5
@@ -126,7 +126,7 @@ class serialConnection:
                 self.serial_port = serial.Serial(self.com_port, self.baud_rate, timeout=1)
                 self.running = True
 
-                threading.Thread(target=self.read_serial, daemon=True).start()
+                threading.Thread(target=self.read_serial, name = "serial read", daemon=True).start()
             except Exception as e:
                     messagebox.showerror("Error", str(e))
         else:
@@ -214,8 +214,6 @@ class controlFrame:
         self.recolor_children(self.frame, color)
     
     def update_entries(self):
-        self.root.data_updates
-
         self.side.serial.set_com(self.port_entry.get())
         self.side.serial.set_baud(int(self.baud_entry.get()))
 
@@ -223,7 +221,8 @@ class controlFrame:
         
         if self.side.serial.get_running():
             self.connect_btn.config(text="Disconnect")
-            self.thread = threading.Thread(target=self.update_outputs, daemon=True).start()
+            self.thread = threading.Thread(target=self.update_outputs, name="controls thread", daemon=True).start()
+            self.root.data_updates()
         else:
             self.connect_btn.config(text="Connect")
 
@@ -320,12 +319,12 @@ class dataFrame:
 
     def check_for_newline(self, side1, side2):
         if(side1.serial.get_running()):
-            threading.Thread(target=self.update_text, args=side1, daemon=True).start()
+            threading.Thread(target=self.update_text, args=side1, name="Data Left Thread", daemon=True).start()
         elif(side2.serial.get_running()):
-            threading.Thread(target=self.update_text, args=side2, daemon=True).start()
+            threading.Thread(target=self.update_text, args=side2, name="Data Right Thread", daemon=True).start()
 
     def update_text(self, side):
-        while(side.get_running()):
+        while(side.serial.get_running()):
             line = side.serial.get_line()
             print(line)
             if line:
@@ -346,7 +345,7 @@ class mapCont:
         self.map_frame = tk.Frame(master=parent, bg = "pink")
 
         # map config
-        self.fig = plt.figure(frameon=False, layout="constrained", figsize=[WIN_WIDTH, WIN_HEIGHT])
+        self.fig = plt.figure(frameon=False, layout="constrained")
         # self.ax = plt.subplot(projection=ccrs.PlateCarree(central_longitude=-75))
 
         # self.ax.coastlines()
@@ -375,7 +374,7 @@ class mapCont:
     
     def check_for_newline(self, side):
         if side.serial.get_running():
-            threading.Thread(target=self.parse_line, args=side, daemon=True).start()
+            threading.Thread(target=self.parse_line, args=side, name="Map Thread", daemon=True).start()
 
     def parse_line(self, side):
         while(side.serial.get_running()):
