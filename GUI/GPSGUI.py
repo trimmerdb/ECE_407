@@ -40,15 +40,13 @@ class SerialGUI:
         self.icon = tk.PhotoImage(file="GUI_icon.png")
         self.root.iconphoto(False, self.icon)
 
-        self.serial_left = serialConnection()
-        self.serial_right = serialConnection()
-        self.side_left = side("Left", self.serial_left)
-        self.side_right = side("Right", self.serial_right)
+        self.serial_left = serialConnection("Left")
+        self.serial_right = serialConnection("Right")
 
         #subframes
         self.controls = self.subframe(root, tk.TOP)
-        self.left_controls = controlFrame(self.controls, self, self.side_left, "Module 1 Configuration", MOD_1_COLOR)
-        self.right_controls = controlFrame(self.controls, self, self.side_right, "Module 2 Configuration", MOD_2_COLOR)
+        self.left_controls = controlFrame(self.controls, self, self.serial_left, "Module 1 Configuration", MOD_1_COLOR)
+        self.right_controls = controlFrame(self.controls, self, self.serial_right, "Module 2 Configuration", MOD_2_COLOR)
         self.tab_window = tk.Frame(master=root)
         self.tab_window.pack(side=tk.TOP, padx=PAD, expand=1, fill=tk.BOTH)
         
@@ -71,10 +69,10 @@ class SerialGUI:
         self.tab_switch()
 
     def data_updates(self):
-        self.raw_data.check_for_newline(self.side_left, self.side_right)
+        self.raw_data.check_for_newline(self.serial_left, self.serial_right)
 
-        # self.map.check_for_newline(self.side_left)
-        # self.map.chekc_for_newline(self.side_right)
+        # self.map.check_for_newline(self.serial_left)
+        # self.map.chekc_for_newline(self.serial_right)
 
     def spacer(self, parent, place = tk.LEFT, multiplier = 1):
         ttk.Separator(parent).pack(side= place, padx=PAD*multiplier)
@@ -100,14 +98,9 @@ class SerialGUI:
     def RadioSetup(self, parent, text):
         return tk.Radiobutton(parent, text=text, variable=self.tab, value=text, indicator=0, command=self.tab_switch, background=TAB_COLOR).pack(side=tk.LEFT)
 
-class side:
-    def __init__(self, name, serial):
-        self.name = name
-        self.serial = serial
-        # self.signal = signal
-
 class serialConnection:
-    def __init__(self, com_port=DEFAULT_PORT, baud_rate=DEFAULT_BAUD):
+    def __init__(self, name, com_port=DEFAULT_PORT, baud_rate=DEFAULT_BAUD):
+        self.name = name
         self.serial_port = None
         self.running = False
         self.com_port = com_port
@@ -155,14 +148,14 @@ class serialConnection:
         return self.running
 
 class controlFrame:
-    def __init__(self, parent, root, side, title, color):
+    def __init__(self, parent, root, serial, title, color):
         self.frame_pack = tk.TOP
         self.cont_pack = tk.LEFT
         self.frame = tk.LabelFrame(parent, text=title)
         self.frame.pack(side=tk.LEFT)
         self.parent = parent
         self.root = root
-        self.side = side
+        self.serial = serial
 
         self.controls = self.subframe(self.frame, self.frame_pack)
         self.coords = self.subframe(self.frame, self.frame_pack)
@@ -214,12 +207,12 @@ class controlFrame:
         self.recolor_children(self.frame, color)
     
     def update_entries(self):
-        self.side.serial.set_com(self.port_entry.get())
-        self.side.serial.set_baud(int(self.baud_entry.get()))
+        self.serial.set_com(self.port_entry.get())
+        self.serial.set_baud(int(self.baud_entry.get()))
 
-        self.side.serial.toggle_connection()
+        self.serial.toggle_connection()
         
-        if self.side.serial.get_running():
+        if self.serial.get_running():
             self.connect_btn.config(text="Disconnect")
             self.thread = threading.Thread(target=self.update_outputs, name="controls thread", daemon=True).start()
             self.root.data_updates()
@@ -227,8 +220,8 @@ class controlFrame:
             self.connect_btn.config(text="Connect")
 
     def update_outputs(self):
-        while(self.side.serial.get_running()):
-            self.parse_line(self.side.serial.get_line())
+        while(self.serial.get_running()):
+            self.parse_line(self.serial.get_line())
 
     def parse_line(self, line):
         """
@@ -317,18 +310,18 @@ class dataFrame:
                     print(child.winfo_class() + " Not recolored")
             frame.configure(bg=color)
 
-    def check_for_newline(self, side1, side2):
-        if(side1.serial.get_running()):
-            threading.Thread(target=self.update_text, args=side1, name="Data Left Thread", daemon=True).start()
-        elif(side2.serial.get_running()):
-            threading.Thread(target=self.update_text, args=side2, name="Data Right Thread", daemon=True).start()
+    def check_for_newline(self, serial1, serial2):
+        if(serial1.get_running()):
+            threading.Thread(target=self.update_text, args=serial1, name="Data Left Thread", daemon=True).start()
+        elif(serial2.get_running()):
+            threading.Thread(target=self.update_text, args=serial2, name="Data Right Thread", daemon=True).start()
 
-    def update_text(self, side):
-        while(side.serial.get_running()):
-            line = side.serial.get_line()
+    def update_text(self, serial):
+        while(serial.get_running()):
+            line = serial.get_line()
             print(line)
             if line:
-                match side.name:
+                match serial.name:
                     case "Left":
                         self.text_left.configure(state=tk.NORMAL)
                         self.text_left.insert("end", line + "\n")
