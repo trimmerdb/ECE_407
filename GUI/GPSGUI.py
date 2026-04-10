@@ -40,8 +40,8 @@ class SerialGUI:
         self.icon = tk.PhotoImage(file="GUI_icon.png")
         self.root.iconphoto(False, self.icon)
 
-        self.serial_left = serialConnection("Left")
-        self.serial_right = serialConnection("Right")
+        self.serial_left = serialConnection("Left", self.data_updates)
+        self.serial_right = serialConnection("Right", self.data_updates)
 
         #subframes
         self.controls = self.subframe(root, tk.TOP)
@@ -68,8 +68,18 @@ class SerialGUI:
         self.tab_3 = tk.Label(self.tab_cont_frame, text="Tab 3")
         self.tab_switch()
 
-    def data_updates(self):
-        self.raw_data.check_for_newline(self.serial_left, self.serial_right)
+    def data_updates(self, name, line):
+        # print("newline")
+        match name:
+            case "Left":
+                self.left_controls.update_outputs(line)
+                self.raw_data.update_left_text(line)
+                # print("left line updated")
+            case "Right":
+                self.right_controls.update_outputs(line)
+                self.raw_data.update_right_text(line)
+
+        # self.raw_data.check_for_newline(self.serial_left, self.serial_right)
 
         # self.map.check_for_newline(self.serial_left)
         # self.map.chekc_for_newline(self.serial_right)
@@ -99,8 +109,9 @@ class SerialGUI:
                 self.tab_3.pack()
 
 class serialConnection:
-    def __init__(self, name, com_port=DEFAULT_PORT, baud_rate=DEFAULT_BAUD):
+    def __init__(self, name, func, com_port=DEFAULT_PORT, baud_rate=DEFAULT_BAUD):
         self.name = name
+        self.func = func
         self.serial_port = None
         self.running = False
         self.com_port = com_port
@@ -127,19 +138,21 @@ class serialConnection:
             if self.serial_port:
                 self.serial_port.close()
 
-    def get_line(self):
-        # if self.line != self.new_line:
-        #     self.line = self.new_line
-        return self.line
-        # else:
-        #     return ""
+    # def get_line(self):
+    #     # if self.line != self.new_line:
+    #     #     self.line = self.new_line
+    #     return self.line
+    #     # else:
+    #     #     return ""
 
     def read_serial(self):
         while self.running:
             try:
                 line = self.serial_port.readline().decode(errors="ignore").strip()
                 if line:
-                    self.line = line
+                    # threading.Thread(target=self.func, args=[self.name, line], name = "main func call", daemon=True).start()
+                    self.func(self.name, line)
+                    # self.line = line
                     # print(self.line)
             except:
                 break
@@ -214,14 +227,14 @@ class controlFrame:
         
         if self.serial.get_running():
             self.connect_btn.config(text="Disconnect")
-            self.thread = threading.Thread(target=self.update_outputs, name="controls thread", daemon=True).start()
-            self.root.data_updates()
+            # self.thread = threading.Thread(target=self.update_outputs, name="controls thread", daemon=True).start()
+            # self.root.data_updates()
         else:
             self.connect_btn.config(text="Connect")
 
-    def update_outputs(self):
-        while(self.serial.get_running()):
-            self.parse_line(self.serial.get_line())
+    def update_outputs(self, line):
+        # while(self.serial.running):
+        self.parse_line(line)
 
     def parse_line(self, line):
         """
@@ -272,6 +285,8 @@ class controlFrame:
 
 class dataFrame:
     def __init__(self, parent):
+        self.prev_left = ""
+        self.prev_right =""
         self.frame_left = tk.Frame(master=parent)
         self.frame_right = tk.Frame(master=parent)
 
@@ -310,33 +325,46 @@ class dataFrame:
                     print(child.winfo_class() + " Not recolored")
             frame.configure(bg=color)
 
-    def check_for_newline(self, serial1, serial2):
-        if(serial1.get_running()):
-            threading.Thread(target=self.update_text, args=[serial1], name="Data Left Thread", daemon=True).start()
-        elif(serial2.get_running()):
-            threading.Thread(target=self.update_text, args=[serial2], name="Data Right Thread", daemon=True).start()
+    # def check_for_newline(self, serial1, serial2):
+    #     if(serial1.get_running()):
+    #         threading.Thread(target=self.update_text, args=[serial1], name="Data Left Thread", daemon=True).start()
+    #     elif(serial2.get_running()):
+    #         threading.Thread(target=self.update_text, args=[serial2], name="Data Right Thread", daemon=True).start()
 
-    def update_text(self, serial):
-        while(serial.get_running()):
-            line = serial.get_line()
-            # print(line)
-            if(line and line !=""):
-                match serial.name:
-                    case "Left":
-                        if(self.text_left.search(pattern=line, index="end", backwards=True) == ""):
-                            self.text_left.configure(state=tk.NORMAL)
-                            self.text_left.insert("end", line + "\n")
-                            self.text_left.see("end")
-                            self.text_left.configure(state=tk.DISABLED)
-                    case "Right":
-                        if(self.text_right.search(pattern=line, index="end", backwards=True) == ""):
-                            self.text_right.configure(state=tk.NORMAL)
-                            self.text_right.insert("end", line + "\n")
-                            self.text_right.see("end")
-                            self.text_right.configure(state=tk.DISABLED)
+    # def update_text(self, side, line):
+    #     # while(serial.running):
+    #     # line = serial.line
+    #     # print(line)
+    #     # if(line and line !=""):
+    #     match side:
+    #         case "Left":
+    #         #     if(self.prev_left != line):
+    #             self.text_left.configure(state=tk.NORMAL)
+    #             self.text_left.insert("end", line + "\n")
+    #             self.text_left.see("end")
+    #             self.text_left.configure(state=tk.DISABLED)
+    #             self.prev_left = line
+    #         case "Right":
+    #         #     if(self.prev_right != line):
+    #             self.text_right.configure(state=tk.NORMAL)
+    #             self.text_right.insert("end", line + "\n")
+    #             self.text_right.see("end")
+    #             self.text_right.configure(state=tk.DISABLED)
+    #             self.prev_right = line
 
-        
+    def update_left_text(self, line):
+        self.text_left.configure(state=tk.NORMAL)
+        self.text_left.insert("end", line + "\n")
+        self.text_left.see("end")
+        self.text_left.configure(state=tk.DISABLED)
+        self.prev_left = line
 
+    def update_right_text(self, line):
+        self.text_right.configure(state=tk.NORMAL)
+        self.text_right.insert("end", line + "\n")
+        self.text_right.see("end")
+        self.text_right.configure(state=tk.DISABLED)
+        self.prev_right = line
 
 class mapCont:
     def __init__(self, parent):
