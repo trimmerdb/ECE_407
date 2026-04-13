@@ -251,8 +251,8 @@ class controlFrame:
             node, lat, lon, fix, alt = match.groups()
 
             self.node_var.set(node)
-            self.lat_var.set(f"{float(lat):.6f}")
-            self.lon_var.set(f"{float(lon):.6f}")
+            self.lat_var.set(f"{float(lat):.7f}")
+            self.lon_var.set(f"{float(lon):.7f}")
             self.fix_var.set(fix)
             self.alt_var.set(f"{float(alt):.1f}")
 
@@ -333,6 +333,8 @@ class dataFrame:
                 case "Text":
                     pass
                 case "Button":
+                    pass
+                case "TSeperator":
                     pass
                 case _:
                     print(child.winfo_class() + " not recolored")
@@ -446,8 +448,8 @@ class mapCont:
                 node, lat, lon, fix, alt = match.groups()
 
                 self.node_var.set(node)
-                self.lat_var.set(f"{float(lat):.6f}")
-                self.lon_var.set(f"{float(lon):.6f}")
+                self.lat_var.set(f"{float(lat):.7f}")
+                self.lon_var.set(f"{float(lon):.7f}")
                 self.fix_var.set(fix)
                 self.alt_var.set(f"{float(alt):.1f}")
 
@@ -460,3 +462,6 @@ if __name__ == "__main__":
     root.protocol("WM_DELETE_WINDOW", quit_me)
     app = SerialGUI(root)
     root.mainloop()
+
+
+# pyinstaller GPSGUI.py --name "Dual Redundant GPS GUI" --onefile --hide-console hide-early --icon ".\GUI_icon.png"
