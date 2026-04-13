@@ -290,10 +290,21 @@ class dataFrame:
         self.frame_left = tk.Frame(master=parent)
         self.frame_right = tk.Frame(master=parent)
 
-        self.label_left = tk.Label(master=self.frame_left, text="Incoming Module 1 Data")
-        self.label_left.pack(side=tk.TOP)
-        self.label_right = tk.Label(master=self.frame_right, text="Incoming Module 2 Data")
-        self.label_right.pack(side=tk.TOP)
+        self.misc_left = tk.Frame(master=self.frame_left)
+        self.misc_left.pack(side=tk.TOP)
+        self.label_left = tk.Label(master=self.misc_left, text="Incoming Module 1 Data")
+        self.label_left.pack(side=tk.LEFT)
+        self.spacer(self.misc_left, multiplier=5)
+        self.clear_left_button = tk.Button(master=self.misc_left, text="Clear Text", command=self.clear_right)
+        self.clear_left_button.pack(side=tk.LEFT, pady=PAD)
+        
+        self.misc_right = tk.Frame(master=self.frame_right)
+        self.misc_right.pack(side=tk.TOP)
+        self.label_right = tk.Label(master=self.misc_right, text="Incoming Module 2 Data")
+        self.label_right.pack(side=tk.LEFT)
+        self.spacer(self.misc_right, multiplier=5)
+        self.clear_right_button = tk.Button(master=self.misc_right, text="Clear Text", command=self.clear_right)
+        self.clear_right_button.pack(side=tk.LEFT, pady=PAD)
 
         self.text_left = tk.Text(self.frame_left, width=10, height=10, state=tk.DISABLED)
         self.text_left.pack(side=tk.TOP, expand=True, fill=tk.BOTH, padx=PAD, pady=PAD)
@@ -321,9 +332,24 @@ class dataFrame:
                     child.configure(background=color)
                 case "Text":
                     pass
+                case "Button":
+                    pass
                 case _:
-                    print(child.winfo_class() + " Not recolored")
+                    print(child.winfo_class() + " not recolored")
             frame.configure(bg=color)
+
+    def spacer(self, parent, place = tk.LEFT, multiplier = 1):
+        ttk.Separator(parent).pack(side= place, padx=PAD*multiplier)
+
+    def clear_left(self):
+        self.text_left.configure(state=tk.NORMAL)
+        self.text_left.delete(1.0, "end")
+        self.text_left.configure(state=tk.DISABLED)
+
+    def clear_right(self):
+        self.text_right.configure(state=tk.NORMAL)
+        self.text_right.delete(1.0, "end")
+        self.text_right.configure(state=tk.DISABLED)
 
     # def check_for_newline(self, serial1, serial2):
     #     if(serial1.get_running()):
