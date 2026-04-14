@@ -295,7 +295,7 @@ class dataFrame:
         self.label_left = tk.Label(master=self.misc_left, text="Incoming Module 1 Data")
         self.label_left.pack(side=tk.LEFT)
         self.spacer(self.misc_left, multiplier=5)
-        self.clear_left_button = tk.Button(master=self.misc_left, text="Clear Text", command=self.clear_right)
+        self.clear_left_button = tk.Button(master=self.misc_left, text="Clear Text", command=self.clear_left)
         self.clear_left_button.pack(side=tk.LEFT, pady=PAD)
         
         self.misc_right = tk.Frame(master=self.frame_right)
