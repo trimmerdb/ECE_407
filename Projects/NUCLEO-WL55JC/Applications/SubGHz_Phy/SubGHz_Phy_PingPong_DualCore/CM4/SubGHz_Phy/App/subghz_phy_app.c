@@ -118,7 +118,10 @@ static UTIL_TIMER_Object_t timerLed;
 /* device state. Master: true, Slave: false*/
 #if (MASTERSET == 1)
 bool isMaster = true;
+#else
+bool isMaster = false;
 #endif
+
 /* random delay to make sure 2 devices will sync*/
 /* the closest the random delays are, the longer it will
    take for the devices to sync when started simultaneously*/
@@ -265,7 +268,7 @@ void SubghzApp_Init(void)
   /*fills tx buffer*/
   memset(BufferTx, 0x0, MAX_APP_BUFFER_SIZE);
 
-  APP_LOG(TS_ON, VLEVEL_L, "rand=%d\n\r", random_delay);
+  APP_LOG(TS_ON, VLEVEL_L, "%s: rand=%d\n\r", CALLSIGN, random_delay);
   /*starts reception*/
   Radio.Rx(RX_TIMEOUT_VALUE + random_delay);
 
@@ -282,7 +285,7 @@ void SubghzApp_Init(void)
 static void OnTxDone(void)
 {
   /* USER CODE BEGIN OnTxDone */
-  APP_LOG(TS_ON, VLEVEL_L, "OnTxDone\n\r");
+  APP_LOG(TS_ON, VLEVEL_L, "%s: OnTxDone\n\r", CALLSIGN);
   /* Update the State of the FSM*/
   State = TX;
   /* Run PingPong process in background*/
@@ -293,9 +296,9 @@ static void OnTxDone(void)
 static void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t LoraSnr_FskCfo)
 {
   /* USER CODE BEGIN OnRxDone */
-  APP_LOG(TS_ON, VLEVEL_L, "OnRxDone\n\r");
+  APP_LOG(TS_ON, VLEVEL_L, "%s: OnRxDone\n\r", CALLSIGN);
 #if ((USE_MODEM_LORA == 1) && (USE_MODEM_FSK == 0))
-  APP_LOG(TS_ON, VLEVEL_L, "RssiValue=%d dBm, SnrValue=%ddB\n\r", rssi, LoraSnr_FskCfo);
+  APP_LOG(TS_ON, VLEVEL_L, "%s: RssiValue=%d dBm, SnrValue=%ddB\n\r", CALLSIGN, rssi, LoraSnr_FskCfo);
   /* Record payload Signal to noise ratio in Lora*/
   SnrValue = LoraSnr_FskCfo;
 #endif /* USE_MODEM_LORA | USE_MODEM_FSK */
@@ -334,7 +337,7 @@ static void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t LoraS
 static void OnTxTimeout(void)
 {
   /* USER CODE BEGIN OnTxTimeout */
-  APP_LOG(TS_ON, VLEVEL_L, "OnTxTimeout\n\r");
+  APP_LOG(TS_ON, VLEVEL_L, "%s: OnTxTimeout\n\r", CALLSIGN);
   /* Update the State of the FSM*/
   State = TX_TIMEOUT;
   /* Run PingPong process in background*/
@@ -345,7 +348,7 @@ static void OnTxTimeout(void)
 static void OnRxTimeout(void)
 {
   /* USER CODE BEGIN OnRxTimeout */
-  APP_LOG(TS_ON, VLEVEL_L, "OnRxTimeout\n\r");
+  APP_LOG(TS_ON, VLEVEL_L, "%s: OnRxTimeout\n\r", CALLSIGN);
   /* Update the State of the FSM*/
   State = RX_TIMEOUT;
   /* Run PingPong process in background*/
@@ -356,7 +359,7 @@ static void OnRxTimeout(void)
 static void OnRxError(void)
 {
   /* USER CODE BEGIN OnRxError */
-  APP_LOG(TS_ON, VLEVEL_L, "OnRxError\n\r");
+  APP_LOG(TS_ON, VLEVEL_L, "%s: OnRxError\n\r", CALLSIGN);
   /* Update the State of the FSM*/
   State = RX_ERROR;
   /* Run PingPong process in background*/
@@ -413,7 +416,7 @@ static void PingPong_Process(void)
         BuildGpsPacket(&txPacket);
         memcpy(BufferTx, &txPacket, PAYLOAD_LEN);
 
-        APP_LOG(TS_ON, VLEVEL_L, "Tx start\n\r");
+        APP_LOG(TS_ON, VLEVEL_L, "%s: Tx start\n\r", CALLSIGN);
         Radio.Send(BufferTx, PAYLOAD_LEN);
       }
       else
@@ -423,7 +426,7 @@ static void PingPong_Process(void)
       break;
 
     case TX:
-      APP_LOG(TS_ON, VLEVEL_L, "Rx start\n\r");
+      APP_LOG(TS_ON, VLEVEL_L, "%s: Rx start\n\r", CALLSIGN);
       Radio.Rx(RX_TIMEOUT_VALUE);
       break;
 
@@ -437,18 +440,18 @@ static void PingPong_Process(void)
         BuildGpsPacket(&txPacket);
         memcpy(BufferTx, &txPacket, PAYLOAD_LEN);
 
-        APP_LOG(TS_ON, VLEVEL_L, "Master Tx start\n\r");
+        APP_LOG(TS_ON, VLEVEL_L, "%s: Master Tx start\n\r", CALLSIGN);
         Radio.Send(BufferTx, PAYLOAD_LEN);
       }
       else
       {
-        APP_LOG(TS_ON, VLEVEL_L, "Slave Rx start\n\r");
+        APP_LOG(TS_ON, VLEVEL_L, "%s: Slave Rx start\n\r", CALLSIGN);
         Radio.Rx(RX_TIMEOUT_VALUE);
       }
       break;
 
     case TX_TIMEOUT:
-      APP_LOG(TS_ON, VLEVEL_L, "Rx restart\n\r");
+      APP_LOG(TS_ON, VLEVEL_L, "%s: Rx restart\n\r", CALLSIGN);
       Radio.Rx(RX_TIMEOUT_VALUE);
       break;
 
