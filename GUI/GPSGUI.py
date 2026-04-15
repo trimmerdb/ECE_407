@@ -334,7 +334,7 @@ class dataFrame:
                     pass
                 case "Button":
                     pass
-                case "TSeperator":
+                case "TSeparator":
                     pass
                 case _:
                     print(child.winfo_class() + " not recolored")
