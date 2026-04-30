@@ -31,12 +31,15 @@ MOD_2_COLOR = "lightcyan2"
 TAB_COLOR = "darkseagreen2"
 
 class SerialGUI:
+    '''
+    this is the main module that contains the highest level frames and the serial connections which read the incoming radio transmissions
+    if you add another module that needs to read from the serial port it needs to take the line as an argument and be called in data_updates()
+    '''
     def __init__(self, root):
         self.root = root
         self.root.title("Dual GPS Monitor")
         self.root.geometry(f"{WIN_WIDTH}x{3*WIN_HEIGHT}")
         self.root.minsize(width=WIN_WIDTH, height=WIN_HEIGHT)
-        # self.root.pack_propogate(False)
         self.icon = tk.PhotoImage(file="GUI_icon.png")
         self.root.iconphoto(False, self.icon)
 
@@ -69,20 +72,13 @@ class SerialGUI:
         self.tab_switch()
 
     def data_updates(self, name, line):
-        # print("newline")
         match name:
             case "Left":
                 self.left_controls.update_outputs(line)
                 self.raw_data.update_left_text(line)
-                # print("left line updated")
             case "Right":
                 self.right_controls.update_outputs(line)
                 self.raw_data.update_right_text(line)
-
-        # self.raw_data.check_for_newline(self.serial_left, self.serial_right)
-
-        # self.map.check_for_newline(self.serial_left)
-        # self.map.chekc_for_newline(self.serial_right)
 
     def spacer(self, parent, place = tk.LEFT, multiplier = 1):
         ttk.Separator(parent).pack(side= place, padx=PAD*multiplier)
@@ -138,22 +134,12 @@ class serialConnection:
             if self.serial_port:
                 self.serial_port.close()
 
-    # def get_line(self):
-    #     # if self.line != self.new_line:
-    #     #     self.line = self.new_line
-    #     return self.line
-    #     # else:
-    #     #     return ""
-
     def read_serial(self):
         while self.running:
             try:
                 line = self.serial_port.readline().decode(errors="ignore").strip()
                 if line:
-                    # threading.Thread(target=self.func, args=[self.name, line], name = "main func call", daemon=True).start()
                     self.func(self.name, line)
-                    # self.line = line
-                    # print(self.line)
             except:
                 break
 
@@ -227,13 +213,10 @@ class controlFrame:
         
         if self.serial.get_running():
             self.connect_btn.config(text="Disconnect")
-            # self.thread = threading.Thread(target=self.update_outputs, name="controls thread", daemon=True).start()
-            # self.root.data_updates()
         else:
             self.connect_btn.config(text="Connect")
 
     def update_outputs(self, line):
-        # while(self.serial.running):
         self.parse_line(line)
 
     def parse_line(self, line):
@@ -270,7 +253,6 @@ class controlFrame:
             match child_type:
                 case "Frame":
                     self.recolor_children(child, color)
-                    # child.configure(bg=color)
                 case "TLabel":
                     child.configure(background=color)
                 case "TEntry":
@@ -353,33 +335,6 @@ class dataFrame:
         self.text_right.delete(1.0, "end")
         self.text_right.configure(state=tk.DISABLED)
 
-    # def check_for_newline(self, serial1, serial2):
-    #     if(serial1.get_running()):
-    #         threading.Thread(target=self.update_text, args=[serial1], name="Data Left Thread", daemon=True).start()
-    #     elif(serial2.get_running()):
-    #         threading.Thread(target=self.update_text, args=[serial2], name="Data Right Thread", daemon=True).start()
-
-    # def update_text(self, side, line):
-    #     # while(serial.running):
-    #     # line = serial.line
-    #     # print(line)
-    #     # if(line and line !=""):
-    #     match side:
-    #         case "Left":
-    #         #     if(self.prev_left != line):
-    #             self.text_left.configure(state=tk.NORMAL)
-    #             self.text_left.insert("end", line + "\n")
-    #             self.text_left.see("end")
-    #             self.text_left.configure(state=tk.DISABLED)
-    #             self.prev_left = line
-    #         case "Right":
-    #         #     if(self.prev_right != line):
-    #             self.text_right.configure(state=tk.NORMAL)
-    #             self.text_right.insert("end", line + "\n")
-    #             self.text_right.see("end")
-    #             self.text_right.configure(state=tk.DISABLED)
-    #             self.prev_right = line
-
     def update_left_text(self, line):
         self.text_left.configure(state=tk.NORMAL)
         self.text_left.insert("end", line + "\n")
@@ -395,6 +350,11 @@ class dataFrame:
         self.prev_right = line
 
 class mapCont:
+    '''
+    this is super unfinished
+    it was going to track each gps on a map and use the reciever location to give a heading and distance
+    matplot lib shrinks the entire GUI and i haven't found a fix yet
+    '''
     def __init__(self, parent):
         self.map_frame = tk.Frame(master=parent, bg = "pink")
 
@@ -463,5 +423,7 @@ if __name__ == "__main__":
     app = SerialGUI(root)
     root.mainloop()
 
-
-# pyinstaller GPSGUI.py --name "Dual Redundant GPS GUI" --onefile --hide-console hide-early --icon ".\GUI_icon.png"
+'''
+pyinstaller GPSGUI.py --name "Dual Redundant GPS GUI" --onefile --hide-console hide-early --icon ".\GUI_icon.png"
+this should be thie line to build into an exe with pyinstaller
+'''
