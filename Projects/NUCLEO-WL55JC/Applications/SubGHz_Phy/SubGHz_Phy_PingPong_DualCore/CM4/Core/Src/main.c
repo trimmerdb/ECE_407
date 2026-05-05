@@ -296,6 +296,9 @@ void USART1_DMA_Init(void)
 
 
 
+        HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx_buffer, RX_BUFFER_SIZE);
+    }
+}
 /* USER CODE END 4 */
 
 /**
